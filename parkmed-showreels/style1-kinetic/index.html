@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en" data-composition-variables='[{"id":"theme","type":"enum","label":"Theme","default":"parkmed","options":[{"value":"parkmed","label":"Parkmed"},{"value":"ref","label":"Reference"}]}]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Parkmed Showreel — Style 1 · Kinetic</title>
+    <link rel="stylesheet" href="assets/fonts.css" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/kit.js"></script>
+    <script src="assets/beats.js"></script>
+    <style>
+      :root { --bg: #061a2e; --fg: #ffffff; --a1: #1fb25a; --a2: #0065b2; --light: #ffffff; --lightInk: #061a2e; --accLight: #0065b2; --floodInk: #061a2e; }
+      [data-theme="ref"] { --bg: #0b0b0c; --fg: #ffffff; --a1: #ff5b1f; --a2: #3346ff; --light: #ffffff; --lightInk: #0b0b0c; --accLight: #e2430b; --floodInk: #0b0b0c; }
+      html, body { margin: 0; background: var(--bg); }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--fg); }
+      .scene { position: absolute; inset: 0; overflow: hidden; background: var(--bg); }
+      .cv { position: absolute; left: 0; top: 0; }
+      .blk { font-family: "Archivo Black", sans-serif; font-weight: 400; }
+      .ser { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; }
+      .mono { font-family: "IBM Plex Mono", monospace; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
+      .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+      .mask { display: block; overflow: hidden; padding-bottom: 0.1em; margin-bottom: -0.1em; }
+      .mask > span { display: block; }
+
+      #hud { position: absolute; inset: 0; z-index: 60; pointer-events: none; color: var(--fg); }
+      #hud .t { position: absolute; font-size: 20px; white-space: nowrap; }
+      #hud .cn { position: absolute; width: 30px; height: 30px; border: 0 solid currentColor; }
+      #hud-tc { font-variant-numeric: tabular-nums; }
+      #hud .rec { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--a1); margin-right: 10px; }
+
+      /* S1 */
+      #s1-line { position: absolute; left: 140px; right: 140px; top: 1010px; height: 3px; background: var(--fg); transform-origin: left center; }
+      #s1-hi { position: absolute; left: 140px; top: 760px; font-size: 130px; line-height: 1; }
+      #s1-name { position: absolute; left: 140px; top: 880px; font-size: 150px; line-height: 1; letter-spacing: -0.02em; }
+      #s1-dot { position: absolute; left: 0; top: 0; width: 56px; height: 56px; border-radius: 50%; background: var(--a1); }
+      #s1-ring { position: absolute; left: 0; top: 0; width: 360px; height: 360px; }
+      #s1-sub { position: absolute; left: 140px; top: 1050px; font-size: 22px; opacity: 0.8; }
+
+      /* S2 */
+      #s2 { background: var(--a1); }
+      #s2-now { font-size: 150px; color: var(--floodInk); line-height: 1; margin-bottom: 10px; }
+      #s2-word { font-size: 300px; line-height: 1; color: var(--floodInk); letter-spacing: -0.02em; }
+      #s2-word .ch { will-change: transform; }
+      .px { position: absolute; width: 22px; height: 22px; background: var(--floodInk); }
+      #s2-lbl { font-size: 30px; color: var(--floodInk); margin-top: 40px; }
+
+      /* S3 echo letters */
+      #s3-word { position: absolute; left: 0; right: 0; top: 880px; display: flex; justify-content: center; font-size: 132px; line-height: 1; }
+      .el { position: relative; display: inline-block; }
+      .el .g { position: absolute; left: 0; top: 0; color: var(--bg); -webkit-text-stroke: 2px var(--fg); }
+      .el .g.on { color: var(--fg); -webkit-text-stroke: 0; }
+
+      /* S4 */
+      #s4 { background: var(--light); }
+      #s4-word { font-size: 196px; line-height: 1; color: var(--lightInk); letter-spacing: -0.02em; }
+      #s4-sub { font-size: 76px; color: var(--lightInk); margin-top: 40px; }
+
+      /* S5 */
+      #s5-word { font-size: 220px; line-height: 1; color: var(--a1); text-align: center; }
+
+      /* S6 marquee */
+      #s6-wall { position: absolute; left: -700px; top: -300px; width: 2600px; transform: rotate(-12deg); }
+      .mrow { white-space: nowrap; font-size: 168px; line-height: 1.04; color: var(--fg); }
+      .mrow.o { color: var(--bg); -webkit-text-stroke: 3px var(--fg); }
+      .mrow.a { color: var(--a1); }
+
+      /* S7 grid */
+      #s7 { background: var(--a2); }
+      #s7-grid { position: absolute; left: 45px; top: 395px; display: grid; grid-template-columns: repeat(9, 110px); grid-template-rows: repeat(11, 110px); }
+      .cell { position: relative; width: 110px; height: 110px; }
+      .cell .h, .cell .v { position: absolute; left: 50%; top: 50%; background: #ffffff; border-radius: 14px; }
+      .cell .h { width: 76px; height: 28px; margin: -14px 0 0 -38px; }
+      .cell .v { width: 28px; height: 76px; margin: -38px 0 0 -14px; }
+      #s7-fn { position: absolute; left: 64px; top: 230px; font-size: 26px; color: #ffffff; }
+      #s7-fn b { color: #ffffff; font-weight: 500; opacity: 0.6; }
+
+      /* S9 spheres */
+      #s9-wall { position: absolute; left: -200px; top: 120px; width: 1600px; }
+      .srow { white-space: nowrap; font-size: 150px; line-height: 1.1; color: var(--fg); }
+      .srow.o { color: var(--bg); -webkit-text-stroke: 3px var(--fg); }
+      .orb { position: absolute; border-radius: 50%; }
+      #s9-tint { position: absolute; inset: 0; background: var(--a1); mix-blend-mode: multiply; opacity: 0; }
+
+      /* S10 card */
+      #s10 { background: var(--a1); }
+      #s10-card { position: absolute; left: 110px; top: 470px; width: 860px; padding: 56px; box-sizing: border-box; background: #ffffff; border-radius: 44px; box-shadow: 0 40px 80px rgba(0,0,0,0.25); color: #121417; font-family: "IBM Plex Sans", sans-serif; }
+      .c-head { display: flex; align-items: center; justify-content: space-between; }
+      .c-head .sw { width: 112px; height: 62px; border-radius: 31px; background: #c3cad2; position: relative; }
+      .c-head .sw .on { position: absolute; inset: 0; border-radius: 31px; background: var(--a1); opacity: 0; }
+      .c-head .sw .k { position: absolute; left: 6px; top: 6px; width: 50px; height: 50px; border-radius: 50%; background: #fff; }
+      .c-lbl { font: 500 26px/1 "IBM Plex Mono", monospace; letter-spacing: 0.12em; text-transform: uppercase; color: #5b6168; margin: 46px 0 18px; }
+      .c-status { display: flex; align-items: center; gap: 30px; }
+      .c-status .big { font: 400 92px/1 "Archivo Black", sans-serif; letter-spacing: -0.02em; color: #121417; }
+      .ring { width: 120px; height: 120px; flex: none; }
+      .c-row { display: flex; align-items: center; gap: 22px; font: 500 38px/1.1 "IBM Plex Sans", sans-serif; padding: 24px 0; border-top: 2px solid #e8ebef; }
+      .c-row:first-of-type { margin-top: 30px; }
+      .tk { width: 48px; height: 48px; flex: none; position: relative; }
+      .tk .bgc { position: absolute; inset: 0; border-radius: 50%; background: var(--a1); }
+      .c-btn { margin-top: 34px; height: 112px; border-radius: 56px; background: #121417; color: #fff; display: flex; align-items: center; justify-content: center; gap: 18px; font: 600 38px/1 "IBM Plex Sans", sans-serif; position: relative; overflow: hidden; }
+      .c-btn .fillc { position: absolute; inset: -2px; background: var(--a1); transform-origin: left center; }
+      .c-btn span, .c-btn svg { position: relative; }
+      #cursor { position: absolute; left: 0; top: 0; width: 64px; height: 64px; z-index: 5; }
+
+      /* S11 */
+      #s11-plate { position: absolute; left: 190px; top: 470px; width: 700px; height: 330px; background: #fff; border-radius: 36px; display: flex; align-items: center; justify-content: center; }
+      #s11-name { position: absolute; left: 0; right: 0; top: 900px; text-align: center; font-size: 160px; line-height: 1; letter-spacing: -0.02em; }
+      #s11-name i { display: inline-block; width: 38px; height: 38px; border-radius: 50%; background: var(--a1); margin-left: 12px; }
+      #s11-eyebrow { position: absolute; left: 0; right: 0; top: 860px; text-align: center; font-size: 26px; color: var(--a1); }
+      #s11-chips { position: absolute; left: 120px; right: 120px; top: 1110px; display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; }
+      .chip { font: 500 24px/1 "IBM Plex Mono", monospace; letter-spacing: 0.12em; text-transform: uppercase; padding: 16px 24px; border: 2px solid var(--fg); border-radius: 999px; }
+      .chip.f { background: var(--a1); border-color: var(--a1); color: var(--floodInk); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="15">
+      <div id="hud" class="mono">
+        <div class="cn" style="left:36px;top:36px;border-left-width:3px;border-top-width:3px"></div><div class="cn" style="right:36px;top:36px;border-right-width:3px;border-top-width:3px"></div>
+        <div class="cn" style="left:36px;bottom:36px;border-left-width:3px;border-bottom-width:3px"></div><div class="cn" style="right:36px;bottom:36px;border-right-width:3px;border-bottom-width:3px"></div>
+        <div class="t" style="left:70px;top:62px" data-layout-allow-overlap>Parkmed</div>
+        <div class="t" style="right:70px;top:62px" data-layout-allow-overlap>Showreel</div>
+        <div class="t" style="left:70px;bottom:60px" data-layout-allow-overlap><span class="rec"></span><span id="hud-tc">00:00:00:00</span></div>
+        <div class="t" style="right:70px;bottom:60px" id="hud-n" data-layout-allow-overlap>01 / 11</div>
+      </div>
+
+      <section id="s1" class="scene clip" data-start="0" data-duration="1.5" data-track-index="1">
+        <div id="s1-hi" class="ser"><span class="mask"><span id="s1-hi-t">Hi, we're</span></span></div>
+        <div id="s1-name" class="blk"><span class="mask"><span id="s1-name-t">PARKMED</span></span></div>
+        <div id="s1-line"></div>
+        <svg id="s1-ring" viewBox="0 0 360 360"><circle id="s1-ring-c" cx="180" cy="180" r="170" fill="none" stroke-width="3" style="stroke:var(--fg)" stroke-dasharray="1068.1" stroke-dashoffset="1068.1" /></svg>
+        <div id="s1-dot"></div>
+        <div id="s1-sub" class="mono">Healthcare Delivered</div>
+      </section>
+
+      <section id="s2" class="scene clip" data-start="1.5" data-duration="1.0" data-track-index="1">
+        <div id="s2-px"></div>
+        <div class="center">
+          <div id="s2-now" class="ser">now</div>
+          <div id="s2-word" class="blk">NABH</div>
+          <div id="s2-lbl" class="mono">Held to the nation’s highest standard</div>
+        </div>
+      </section>
+
+      <section id="s3" class="scene clip" data-start="2.5" data-duration="1.0" data-track-index="1">
+        <div id="s3-word" class="blk"></div>
+      </section>
+
+      <section id="s4" class="scene clip" data-start="3.5" data-duration="1.0" data-track-index="1">
+        <div class="center"><div id="s4-word" class="blk">QUALITY</div><div id="s4-sub" class="ser">committed to it.</div></div>
+      </section>
+
+      <section id="s5" class="scene clip" data-start="4.5" data-duration="1.0" data-track-index="1">
+        <div class="center"><div id="s5-word" class="ser"><span class="mask"><span class="s5l">focused</span></span><span class="mask"><span class="s5l">on</span></span></div></div>
+      </section>
+
+      <section id="s6" class="scene clip" data-start="5.5" data-duration="1.0" data-track-index="1">
+        <div id="s6-wall" class="blk"></div>
+      </section>
+
+      <section id="s7" class="scene clip" data-start="6.5" data-duration="1.5" data-track-index="1">
+        <div id="s7-fn" class="mono">f(t) = ease(t − 0.3·d)&nbsp;&nbsp;<b>// 99 units</b></div>
+        <div id="s7-grid"></div>
+      </section>
+
+      <section id="s8" class="scene clip" data-start="8.0" data-duration="1.5" data-track-index="1">
+        <canvas id="cv8" class="cv"></canvas>
+        <div class="mono" style="position:absolute;left:0;right:0;top:1340px;text-align:center;font-size:24px;opacity:0.75" id="s8-lbl">4,000 particles · curl orbit</div>
+      </section>
+
+      <section id="s9" class="scene clip" data-start="9.5" data-duration="1.0" data-track-index="1">
+        <div id="s9-wall" class="blk"></div>
+        <div id="s9-orbs"></div>
+        <div id="s9-tint"></div>
+      </section>
+
+      <section id="s10" class="scene clip" data-start="10.5" data-duration="2.0" data-track-index="1">
+        <div id="s10-card">
+          <div class="c-head"><div id="s10-logo"></div><div class="sw"><div class="on" id="s10-on"></div><div class="k" id="s10-k"></div></div></div>
+          <div class="c-lbl">NABH Accreditation</div>
+          <div class="c-status">
+            <svg class="ring" viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="#e8ebef" stroke-width="12"/><circle id="s10-arc" cx="60" cy="60" r="50" fill="none" stroke-width="12" stroke-linecap="round" style="stroke:var(--a1)" transform="rotate(-90 60 60)" stroke-dasharray="314.16" stroke-dashoffset="314.16"/><path id="s10-chk" d="M40 61 L54 75 L82 46" fill="none" stroke="#121417" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="64" stroke-dashoffset="64"/></svg>
+            <div class="big"><span class="mask"><span id="s10-status">Accredited</span></span></div>
+          </div>
+          <div class="c-row" id="cr1"><div class="tk"><div class="bgc"></div><svg viewBox="0 0 48 48" style="position:absolute;inset:0"><path d="M14 25 L21 32 L35 17" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="34" stroke-dashoffset="34"/></svg></div>Patient safety</div>
+          <div class="c-row" id="cr2"><div class="tk"><div class="bgc"></div><svg viewBox="0 0 48 48" style="position:absolute;inset:0"><path d="M14 25 L21 32 L35 17" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="34" stroke-dashoffset="34"/></svg></div>Quality of care</div>
+          <div class="c-row" id="cr3"><div class="tk"><div class="bgc"></div><svg viewBox="0 0 48 48" style="position:absolute;inset:0"><path d="M14 25 L21 32 L35 17" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="34" stroke-dashoffset="34"/></svg></div>Trust</div>
+          <div class="c-btn" id="s10-btn"><div class="fillc" id="s10-fill"></div><span id="s10-btn-t">Focused on Patient Safety →</span></div>
+        </div>
+        <svg id="cursor" viewBox="0 0 64 64"><path d="M10 6 L10 50 L22 39 L30 58 L38 54 L30 36 L46 36 Z" fill="#121417" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></svg>
+      </section>
+
+      <section id="s11" class="scene clip" data-start="12.5" data-duration="2.5" data-track-index="1">
+        <div id="s11-plate"></div>
+        <div id="s11-eyebrow" class="mono">NABH Accredited</div>
+        <div id="s11-name" class="blk"><span id="s11-name-t">PARKMED</span><i id="s11-dot"></i></div>
+        <div id="s11-chips">
+          <div class="chip f">Quality</div><div class="chip">Patient Safety</div><div class="chip">Trust</div><div class="chip">Healthcare Delivered</div>
+        </div>
+      </section>
+
+      <audio id="score" src="assets/audio/score.wav" data-start="0" data-duration="15" data-track-index="10" data-volume="1"></audio>
+    </div>
+
+    <script>
+      KIT.theme();
+      const B = BEATS.beat; // 0.5 s @ 120 BPM
+      const at = (b) => +(b * B).toFixed(4);
+      const C = { a1: KIT.css("--a1"), a2: KIT.css("--a2"), fg: KIT.css("--fg"), bg: KIT.css("--bg") };
+      const isRef = document.documentElement.getAttribute("data-theme") === "ref";
+
+      /* static build */
+      document.getElementById("s11-plate").innerHTML = KIT.logoHTML("logo11", 600);
+      document.getElementById("s10-logo").innerHTML = '<img src="assets/logo/parkmed-logo.png" alt="Parkmed" style="display:block;width:260px;height:auto">';
+      (function () {
+        const R = KIT.rng(77), px = document.getElementById("s2-px");
+        for (let i = 0; i < 46; i++) { const d = document.createElement("div"); d.className = "px"; d.style.left = (120 + R() * 840) + "px"; d.style.top = (700 + R() * 520) + "px"; d.dataset.dx = (R() - 0.5) * 900; d.dataset.dy = (R() - 0.5) * 900; px.appendChild(d); }
+        const w3 = document.getElementById("s3-word");
+        [..."ACCREDITED"].forEach((ch) => { const el = document.createElement("span"); el.className = "el"; el.setAttribute("data-layout-allow-overlap", ""); for (let g = 5; g >= 1; g--) { const s = document.createElement("span"); s.className = "g"; s.setAttribute("data-layout-allow-overlap", ""); s.textContent = ch; s.style.opacity = 0.18 + (5 - g) * 0.12; s.dataset.k = g; el.appendChild(s); } const main = document.createElement("span"); main.className = "g on"; main.setAttribute("data-layout-allow-overlap", ""); main.style.position = "relative"; main.textContent = ch; el.appendChild(main); w3.appendChild(el); });
+        const wall = document.getElementById("s6-wall");
+        ["", "o", "a", "o", "", "o", "a", "o", "", "o", "a", "o"].forEach((c) => { const d = document.createElement("div"); d.className = "mrow " + c; d.textContent = "PATIENT — SAFETY — ".repeat(4); d.setAttribute("data-layout-allow-overlap", ""); d.setAttribute("data-layout-allow-overflow", ""); wall.appendChild(d); });
+        const g = document.getElementById("s7-grid");
+        for (let i = 0; i < 99; i++) { const c = document.createElement("div"); c.className = "cell"; c.innerHTML = '<div class="h"></div><div class="v"></div>'; g.appendChild(c); }
+        const w9 = document.getElementById("s9-wall");
+        ["", "o", "", "o", "", "o", "", "o", "", "o"].forEach((c, i) => { const d = document.createElement("div"); d.className = "srow " + c; d.textContent = (i % 2 ? "SAFETY ✚ QUALITY ✚ " : "QUALITY ✚ SAFETY ✚ ").repeat(3); d.setAttribute("data-layout-allow-overlap", ""); d.setAttribute("data-layout-allow-overflow", ""); w9.appendChild(d); });
+        const orbs = document.getElementById("s9-orbs"), RO = KIT.rng(909);
+        for (let i = 0; i < 7; i++) {
+          const o = document.createElement("div"); o.className = "orb"; const s = 150 + RO() * 220;
+          o.style.width = o.style.height = s + "px"; o.style.left = (RO() * 900 - 60) + "px"; o.style.top = (300 + RO() * 1300) + "px";
+          o.style.background = isRef
+            ? `radial-gradient(circle at 32% 28%, #ffffff 0 6%, rgba(255,255,255,0) 18%), conic-gradient(from ${RO() * 360}deg, #ff3d6e, #ffb800, #39ff88, #2bd9ff, #6a3dff, #ff3d6e)`
+            : `radial-gradient(circle at 32% 28%, #ffffff 0 6%, rgba(255,255,255,0) 18%), radial-gradient(circle at 60% 70%, #0a2a4a 0%, #0065b2 45%, #1fb25a 80%, #b9f5d0 100%)`;
+          o.style.boxShadow = "inset -30px -40px 60px rgba(0,0,0,0.45), 0 30px 60px rgba(0,0,0,0.35)";
+          o.dataset.dx = (RO() - 0.5) * 500; o.dataset.dy = -200 - RO() * 400; orbs.appendChild(o);
+        }
+      })();
+
+      function build() {
+        const tl = gsap.timeline({ paused: true }), X = "expo.out";
+
+        /* S1 intro */
+        tl.fromTo("#s1-line", { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "power3.inOut" }, 0.05);
+        tl.fromTo("#s1-hi-t", { yPercent: 135 }, { yPercent: 0, duration: 0.5, ease: X }, 0.3);
+        tl.fromTo("#s1-name-t", { yPercent: 135 }, { yPercent: 0, duration: 0.5, ease: X }, at(1));
+        const nameW = (() => { const c = document.createElement("canvas").getContext("2d"); c.font = '400 150px "Archivo Black"'; return c.measureText("PARKMED").width; })();
+        const dotX = 140 + nameW + 24, dotY = 880 + 150 - 64;
+        gsap.set("#s1-dot", { x: dotX, y: dotY }); gsap.set("#s1-ring", { x: dotX + 28 - 180, y: dotY + 28 - 180 });
+        tl.fromTo("#s1-dot", { scale: 0 }, { scale: 1, duration: 0.3, ease: "back.out(3)" }, at(2) - 0.1);
+        tl.fromTo("#s1-ring-c", { attr: { "stroke-dashoffset": 1068.1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.5, ease: "power2.out" }, at(2));
+        tl.fromTo("#s1-sub", { opacity: 0, y: 12 }, { opacity: 0.8, y: 0, duration: 0.4, ease: "power2.out" }, at(2));
+
+        /* S2 pixel-glitch NABH on flood */
+        const n2 = KIT.split(document.getElementById("s2-word")), R2 = KIT.rng(22);
+        n2.forEach((c, i) => tl.fromTo(c, { x: (R2() - 0.5) * 500, y: (R2() - 0.5) * 600, filter: "blur(24px)", opacity: 0 }, { x: 0, y: 0, filter: "blur(0px)", opacity: 1, duration: 0.42, ease: "steps(7)" }, at(3) + i * 0.04));
+        document.querySelectorAll("#s2-px .px").forEach((p, i) => tl.fromTo(p, { x: +p.dataset.dx, y: +p.dataset.dy, opacity: 1 }, { x: 0, y: 0, opacity: 0, duration: 0.5, ease: "steps(6)" }, at(3) + (i % 6) * 0.03));
+        tl.fromTo("#s2-now", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.3, ease: X }, at(4));
+        tl.fromTo("#s2-lbl", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "steps(4)" }, at(4));
+
+        /* S3 echo drop letters */
+        document.querySelectorAll("#s3-word .el").forEach((el, i) => {
+          el.querySelectorAll(".g").forEach((g) => {
+            const k = +(g.dataset.k || 0);
+            tl.fromTo(g, { y: -520 - k * 40 }, { y: k ? -k * 22 : 0, duration: 0.45, ease: X }, at(5) + i * 0.035 + k * 0.02);
+          });
+        });
+        tl.to("#s3-word .g:not(.on)", { y: 0, opacity: 0, duration: 0.25, ease: "power2.in", stagger: 0.004 }, at(6) + 0.1);
+
+        /* S4 QUALITY with long extruded shadow */
+        const shadow = Array.from({ length: 18 }, (_, i) => `${i + 1}px ${i + 1}px 0 ${C.a1}`).join(",");
+        document.getElementById("s4-word").style.textShadow = shadow;
+        tl.fromTo("#s4-word", { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: X }, at(7));
+        tl.fromTo("#s4-sub", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: X }, at(8));
+        tl.to("#s4-word", { scale: 1.06, duration: 0.6, ease: "none" }, at(7) + 0.35);
+
+        /* S5 focused on */
+        tl.fromTo(".s5l", { yPercent: 135, filter: "blur(10px)" }, { yPercent: 0, filter: "blur(0px)", duration: 0.45, ease: X, stagger: 0.12 }, at(9));
+
+        /* S6 diagonal marquee */
+        document.querySelectorAll("#s6-wall .mrow").forEach((r, i) => { const d = i % 2 ? 1 : -1; tl.fromTo(r, { x: -260 * d }, { x: 260 * d, duration: 1.0, ease: "none" }, at(11)); });
+        tl.fromTo("#s6-wall", { scale: 1.25 }, { scale: 1, duration: 0.5, ease: X }, at(11));
+
+        /* S7 blue grid: dot → plus → dot, wave from centre */
+        const H = document.querySelectorAll("#s7-grid .h"), V = document.querySelectorAll("#s7-grid .v"), G = { grid: [11, 9], from: "center", amount: 0.3 };
+        tl.set(V, { scaleY: 0 }, 0);
+        tl.fromTo(H, { scaleX: 0, scaleY: 0 }, { scaleX: 0.368, scaleY: 1, duration: 0.3, ease: "back.out(2)", stagger: G }, at(13));
+        tl.to(H, { scaleX: 1, duration: 0.3, ease: "power3.inOut", stagger: G }, at(14));
+        tl.to(V, { scaleY: 1, duration: 0.3, ease: "power3.inOut", stagger: G }, at(14));
+        tl.to(["#s7-grid .h", "#s7-grid .v"], { backgroundColor: C.a1 === "#1fb25a" ? "#1fb25a" : C.a1, duration: 0.2, stagger: { grid: [11, 9], from: "center", amount: 0.25 } }, at(15));
+        tl.to(document.querySelectorAll("#s7-grid .cell"), { keyframes: [{ scale: 0.55, duration: 0.15, ease: "power2.out" }, { scale: 1, duration: 0.3, ease: "back.out(2.5)" }], stagger: G }, at(15));
+        tl.fromTo("#s7-fn", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "steps(3)" }, at(13));
+
+        /* S8 particle orbit → CARE → burst */
+        const ctx8 = KIT.canvas(document.getElementById("cv8"), 1080, 1920);
+        const tgt = KIT.textPoints("CARE", '400 330px "Archivo Black"', 1080, 420, 7, 540, 960), R8 = KIT.rng(808), PP = [];
+        for (let i = 0; i < 4000; i++) { const p = tgt[i % tgt.length]; PP.push({ a: R8() * 6.283, r: 180 + R8() * 300, sp: 0.6 + R8() * 1.4, tx: p[0] + (R8() - 0.5) * 3, ty: p[1] + (R8() - 0.5) * 3, d: R8() * 0.25, c: R8() < 0.3 ? C.a1 : C.fg, ex: (R8() - 0.5) * 2, ey: (R8() - 0.5) * 2 }); }
+        function drawP(t) {
+          ctx8.clearRect(0, 0, 1080, 1920);
+          if (t < at(16) - 0.01 || t > at(19) + 0.01) return;
+          const lt = t - at(16);
+          for (const p of PP) {
+            const ang = p.a + lt * p.sp * 2.4, rr = p.r * (1 + 0.15 * Math.sin(lt * 3 + p.a * 3));
+            const ox = 540 + Math.cos(ang) * rr, oy = 960 + Math.sin(ang) * rr * 0.55 + Math.sin(ang * 3 + lt) * 30;
+            const m = KIT.ease.inOut3(KIT.clamp((lt - 0.45 - p.d) / 0.4)), q = KIT.ease.in3(KIT.clamp((lt - 1.25) / 0.25));
+            const x = ox + (p.tx - ox) * m + p.ex * 900 * q, y = oy + (p.ty - oy) * m + p.ey * 1200 * q;
+            ctx8.globalAlpha = 0.85; ctx8.fillStyle = p.c; ctx8.fillRect(x - 1.6, y - 1.6, 3.2, 3.2);
+          }
+          ctx8.globalAlpha = 1;
+        }
+        tl.fromTo("#s8-lbl", { opacity: 0 }, { opacity: 0.75, duration: 0.2 }, at(16) + 0.2);
+
+        /* S9 glossy orbs over word wall, tint on the beat */
+        document.querySelectorAll("#s9-wall .srow").forEach((r, i) => { const d = i % 2 ? 1 : -1; tl.fromTo(r, { x: -180 * d }, { x: 180 * d, duration: 1.0, ease: "none" }, at(19)); });
+        document.querySelectorAll("#s9-orbs .orb").forEach((o, i) => tl.fromTo(o, { x: 0, y: 300, scale: 0.6, rotation: 0 }, { x: +o.dataset.dx, y: +o.dataset.dy, scale: 1, rotation: 160, duration: 1.0, ease: "power2.out" }, at(19) + i * 0.02));
+        tl.fromTo("#s9-tint", { opacity: 0 }, { opacity: 0.55, duration: 0.06 }, at(20));
+        tl.to("#s9-tint", { opacity: 0, duration: 0.3, ease: "power2.out" }, at(20) + 0.06);
+
+        /* S10 card: toggle, ring fill, ticks, cursor press */
+        tl.fromTo("#s10-card", { y: 1300, rotation: 6 }, { y: 0, rotation: 0, duration: 0.5, ease: X }, at(21));
+        tl.to("#s10-k", { x: 50, duration: 0.2, ease: "back.out(2)" }, at(22));
+        tl.to("#s10-on", { opacity: 1, duration: 0.12 }, at(22));
+        tl.fromTo("#s10-arc", { attr: { "stroke-dashoffset": 314.16 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.45, ease: "power2.inOut" }, at(22));
+        tl.fromTo("#s10-chk", { attr: { "stroke-dashoffset": 64 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.2, ease: "power2.out" }, at(23) - 0.05);
+        tl.fromTo("#s10-status", { yPercent: 135 }, { yPercent: 0, duration: 0.35, ease: X }, at(22) + 0.1);
+        ["#cr1", "#cr2", "#cr3"].forEach((r, i) => { const el = document.querySelector(r); tl.fromTo(el.querySelector(".bgc"), { scale: 0 }, { scale: 1, duration: 0.2, ease: "back.out(2.5)" }, at(23) + i * 0.25); tl.fromTo(el.querySelector("path"), { attr: { "stroke-dashoffset": 34 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.15 }, at(23) + i * 0.25 + 0.05); });
+        tl.fromTo("#cursor", { x: 1000, y: 1700 }, { x: 600, y: 1255, duration: 0.45, ease: "power3.inOut" }, at(23) + 0.3);
+        tl.to("#cursor", { scale: 0.85, duration: 0.06, yoyo: true, repeat: 1 }, at(24));
+        tl.fromTo("#s10-fill", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power3.out" }, at(24));
+
+        /* S11 end */
+        tl.fromTo("#s11-plate", { scaleY: 0.01 }, { scaleY: 1, duration: 0.4, ease: X }, at(25));
+        KIT.logoBuild(tl, "#logo11", at(25) + 0.2, 1);
+        tl.fromTo("#s11-name-t", { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.4, ease: X }, at(26));
+        tl.fromTo("#s11-dot", { scale: 0 }, { scale: 1, duration: 0.3, ease: "back.out(3)" }, at(26) + 0.25);
+        tl.fromTo("#s11-eyebrow", { opacity: 0, scaleX: 1.4 }, { opacity: 1, scaleX: 1, duration: 0.5, ease: X }, at(26));
+        tl.fromTo("#s11-chips .chip", { opacity: 0, y: 20, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(2)", stagger: 0.08 }, at(27));
+
+        /* HUD */
+        const tc = document.getElementById("hud-tc"), hn = document.getElementById("hud-n"), hud = document.getElementById("hud");
+        const cuts = BEATS.cuts, light = [[at(3), at(5)], [at(7), at(9)], [at(13), at(16)], [at(21), at(25)]];
+        function hudDraw(t) {
+          tc.textContent = KIT.tc(t);
+          let k = 0; cuts.forEach((c, i) => { if (t >= c - 1e-6) k = i; });
+          hn.textContent = String(k + 1).padStart(2, "0") + " / 11";
+          const onFlood = light.some(([a, b]) => t >= a && t < b);
+          const onBlue = t >= at(13) && t < at(16);
+          hud.style.color = onBlue ? "#ffffff" : onFlood ? KIT.css("--lightInk") : C.fg;
+        }
+        const clock = { t: 0 }, draw = () => { drawP(clock.t); hudDraw(clock.t); };
+        tl.to(clock, { t: 15, duration: 15, ease: "none", onUpdate: draw }, 0);
+        draw();
+        window.__timelines["main"] = tl;
+      }
+      KIT.ready(['400 150px "Archivo Black"', 'italic 400 130px "Instrument Serif"', '500 20px "IBM Plex Mono"', '600 38px "IBM Plex Sans"']).then(build);
+    </script>
+  </body>
+</html>

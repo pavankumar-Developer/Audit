@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en" data-composition-variables='[{"id":"theme","type":"enum","label":"Theme","default":"parkmed","options":[{"value":"parkmed","label":"Parkmed"},{"value":"ref","label":"Reference"}]}]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Parkmed Showreel — Style 2 · Editorial</title>
+    <link rel="stylesheet" href="assets/fonts.css" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/kit.js"></script>
+    <script src="assets/beats.js"></script>
+    <style>
+      :root { --bg: #ffffff; --ink: #0f1c2b; --acc: #1fb25a; --acc2: #0065b2; --accDeep: #12813f; }
+      [data-theme="ref"] { --bg: #ffffff; --ink: #141413; --acc: #d97757; --acc2: #d97757; --accDeep: #a4532f; }
+      html, body { margin: 0; background: var(--bg); }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--ink); }
+      .scene { position: absolute; inset: 0; overflow: hidden; background: var(--bg); }
+      .full { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+      .serif { font-family: "Newsreader", Georgia, serif; font-weight: 700; letter-spacing: -0.02em; }
+      .serif6 { font-family: "Newsreader", Georgia, serif; font-weight: 600; letter-spacing: -0.01em; }
+      .ln { fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round; }
+      .ac { fill: none; stroke: var(--acc); stroke-linecap: round; stroke-linejoin: round; }
+      .word { position: absolute; left: 0; right: 0; text-align: center; font-size: 210px; line-height: 1; white-space: nowrap; }
+      .cap { position: absolute; left: 80px; right: 80px; text-align: center; font-size: 74px; line-height: 1.12; text-wrap: balance; }
+      .mask { display: block; overflow: hidden; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+      .mask > span { display: block; }
+
+      #s1-logo { position: absolute; left: 260px; top: 780px; }
+      #wordbox { position: absolute; inset: 0; }
+      #w-mark { position: absolute; left: 0; top: 0; width: 120px; height: 60px; }
+
+      .plus3d { position: absolute; left: 540px; top: 900px; width: 0; height: 0; transform-style: preserve-3d; }
+      .plus3d .ly { position: absolute; left: -170px; top: -170px; width: 340px; height: 340px; }
+      .plus3d .ly i { position: absolute; display: block; border-radius: 26px; }
+      .plus3d .ly i:first-child { left: 0; top: 115px; width: 340px; height: 110px; }
+      .plus3d .ly i:last-child { left: 115px; top: 0; width: 110px; height: 340px; }
+      #s3d-stage { position: absolute; inset: 0; perspective: 1400px; }
+
+      #s10-word { position: absolute; left: 0; right: 0; top: 830px; text-align: center; font-size: 186px; line-height: 1; }
+      #s10-dot { display: inline-block; width: 44px; height: 44px; border-radius: 50%; background: var(--acc); margin-left: 6px; vertical-align: 0.02em; }
+      #s11-logo { position: absolute; left: 190px; top: 700px; }
+      #s11-cap { position: absolute; left: 0; right: 0; top: 1080px; text-align: center; font-size: 64px; }
+      #s11-plus { position: absolute; left: 540px; top: 900px; width: 0; height: 0; }
+      #s11-plus i { position: absolute; display: block; background: var(--acc); border-radius: 10px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="15">
+
+      <!-- S1 logo + arc stroke -->
+      <section id="s1" class="scene clip" data-start="0" data-duration="1.25" data-track-index="1">
+        <div id="s1-logo"></div>
+        <svg class="full" viewBox="0 0 1080 1920"><circle id="s1-arc" class="ac" cx="540" cy="900" r="420" stroke-width="12" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" transform="rotate(-80 540 900)" /></svg>
+      </section>
+
+      <!-- S2 rosette construction -->
+      <section id="s2" class="scene clip" data-start="1.25" data-duration="1.25" data-track-index="1">
+        <svg class="full" viewBox="0 0 1080 1920"><g id="ros"></g><g id="ros-dots"></g></svg>
+      </section>
+
+      <!-- S3–S5 words: safety → quality → trust, with line art -->
+      <section id="s3" class="scene clip" data-start="2.5" data-duration="3.75" data-track-index="1">
+        <canvas id="cv-poly" class="full"></canvas>
+        <svg class="full" viewBox="0 0 1080 1920"><g id="flakes"></g><g id="rules"></g>
+          <path id="w-under" class="ac" stroke-width="22" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" d="M330 1050 C 450 1030, 610 1062, 760 1036" />
+          <path id="w-tick" class="ac" stroke-width="20" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" d="M800 760 C 815 735, 840 712, 868 698" />
+        </svg>
+        <div class="word serif" id="w1" style="top:800px">safety</div>
+        <div class="word serif" id="w2" style="top:800px">quality</div>
+        <div class="word serif" id="w3" style="top:800px">trust</div>
+      </section>
+
+      <!-- S6–S7 icosahedron → 3D plus, caption spans both -->
+      <section id="s6" class="scene clip" data-start="6.25" data-duration="2.5" data-track-index="1">
+        <canvas id="cv-ico" class="full"></canvas>
+        <svg class="full" viewBox="0 0 1080 1920"><g id="spokes"></g></svg>
+        <div id="s3d-stage"><div class="plus3d" id="plus3d"></div></div>
+        <div class="cap serif6" id="s6-cap" style="top:1460px"><span class="mask"><span id="s6-cap-t">Held to the nation’s highest standard.</span></span></div>
+      </section>
+
+      <!-- S8 constellation check -->
+      <section id="s8" class="scene clip" data-start="8.75" data-duration="1.25" data-track-index="1">
+        <svg class="full" viewBox="0 0 1080 1920"><g id="stars"></g>
+          <polyline id="chk-a" class="ln" stroke-width="5" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" points="300,900 470,1070" />
+          <polyline id="chk-b" class="ac" stroke-width="9" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" points="470,1070 800,700" />
+          <g id="chk-nodes"></g>
+        </svg>
+        <div class="cap serif" id="s8-cap" style="top:1300px;font-size:120px"><span class="mask"><span id="s8-cap-t">NABH accredited.</span></span></div>
+      </section>
+
+      <!-- S9 construction geometry -->
+      <section id="s9" class="scene clip" data-start="10.0" data-duration="1.25" data-track-index="1">
+        <svg class="full" viewBox="0 0 1080 1920">
+          <circle id="g-ring" class="ln" cx="540" cy="760" r="300" stroke-width="34" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" transform="rotate(-90 540 760)" />
+          <rect id="g-sq" class="ln" x="328" y="548" width="424" height="424" stroke-width="4" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
+          <line id="g-d1" class="ln" x1="200" y1="420" x2="880" y2="1100" stroke-width="3" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
+          <line id="g-d2" class="ln" x1="880" y1="420" x2="200" y2="1100" stroke-width="3" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
+          <circle id="g-small" class="ln" cx="540" cy="760" r="120" stroke-width="4" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
+          <circle id="g-dot" cx="540" cy="460" r="20" style="fill:var(--acc)" />
+        </svg>
+        <div class="cap serif6" style="top:1250px"><span class="mask"><span class="s9l">Patient safety.</span></span><span class="mask"><span class="s9l">Quality of care.</span></span></div>
+      </section>
+
+      <!-- S10 Delivered. -->
+      <section id="s10" class="scene clip" data-start="11.25" data-duration="1.875" data-track-index="1">
+        <svg class="full" viewBox="0 0 1080 1920"><g id="rules2"></g></svg>
+        <div id="s10-word" class="serif"><span class="mask" style="display:inline-block"><span id="s10-t" style="display:inline-block">Delivered</span></span><span id="s10-dot"></span></div>
+      </section>
+
+      <!-- S11 plus → logo -->
+      <section id="s11" class="scene clip" data-start="13.125" data-duration="1.875" data-track-index="1">
+        <div id="s11-plus"><i style="left:-60px;top:-18px;width:120px;height:36px"></i><i style="left:-18px;top:-60px;width:36px;height:120px"></i></div>
+        <div id="s11-logo"></div>
+        <div id="s11-cap" class="serif6"><span class="mask"><span id="s11-cap-t">is now NABH accredited.</span></span></div>
+      </section>
+
+      <audio id="score" src="assets/audio/score.wav" data-start="0" data-duration="15" data-track-index="10" data-volume="1"></audio>
+    </div>
+
+    <script>
+      KIT.theme();
+      const B = BEATS.beat; // 0.625 s @ 96 BPM
+      const at = (b) => +(b * B).toFixed(4);
+      const C = { ink: KIT.css("--ink"), acc: KIT.css("--acc"), acc2: KIT.css("--acc2"), accDeep: KIT.css("--accDeep") };
+      const NS = "http://www.w3.org/2000/svg";
+      const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; };
+
+      /* ---------- static art ---------- */
+      document.getElementById("s1-logo").innerHTML = KIT.logoHTML("logo1", 560);
+      document.getElementById("s11-logo").innerHTML = KIT.logoHTML("logo11", 700);
+      (function () {
+        const ros = document.getElementById("ros"), dots = document.getElementById("ros-dots");
+        mk("circle", { class: "ln rs", cx: 540, cy: 900, r: 380, "stroke-width": 5, pathLength: 1, "stroke-dasharray": 1, "stroke-dashoffset": 1 }, ros);
+        mk("circle", { class: "ln rs", cx: 540, cy: 900, r: 110, "stroke-width": 4, pathLength: 1, "stroke-dasharray": 1, "stroke-dashoffset": 1 }, ros);
+        for (let i = 0; i < 12; i++) mk("ellipse", { class: "ln rs", cx: 540, cy: 900, rx: 270, ry: 64, "stroke-width": 2.5, pathLength: 1, "stroke-dasharray": 1, "stroke-dashoffset": 1, transform: `rotate(${i * 15} 540 900)` }, ros);
+        for (let i = 0; i < 24; i++) { const a = (i / 24) * Math.PI * 2; mk("circle", { cx: 540 + Math.cos(a) * 380, cy: 900 + Math.sin(a) * 380, r: i % 2 ? 7 : 12, style: `fill:${i % 2 ? C.ink : C.acc}`, class: "rd" }, dots); }
+        // six-fold flakes
+        const fl = document.getElementById("flakes"), R = KIT.rng(66);
+        [[200, 420, 1], [880, 470, 0.8], [150, 1350, 0.9], [910, 1300, 1.1], [540, 300, 0.7], [540, 1560, 0.85]].forEach(([x, y, s], k) => {
+          const g = mk("g", { class: "flake", transform: `translate(${x} ${y}) scale(${s})` }, fl);
+          const inner = mk("g", { class: "flake-in" }, g);
+          const br = [R() * 0.3 + 0.35, R() * 0.25 + 0.6];
+          for (let i = 0; i < 6; i++) {
+            const rot = mk("g", { transform: `rotate(${i * 60})` }, inner);
+            mk("line", { class: "ln", x1: 0, y1: 0, x2: 0, y2: -110, "stroke-width": 3 }, rot);
+            br.forEach((p) => { const yy = -110 * p, l = 34 * (1 - p + 0.4); mk("line", { class: "ln", x1: 0, y1: yy, x2: l, y2: yy - l, "stroke-width": 2.5 }, rot); mk("line", { class: "ln", x1: 0, y1: yy, x2: -l, y2: yy - l, "stroke-width": 2.5 }, rot); });
+            mk("circle", { cx: 0, cy: -118, r: 6, style: `fill:${k % 2 ? C.acc : C.ink}` }, rot);
+          }
+        });
+        const rules = document.getElementById("rules");
+        for (let i = 0; i < 9; i++) mk("line", { class: "ln rl", x1: 60, y1: 560 + i * 100, x2: 1020, y2: 560 + i * 100, "stroke-width": 2, pathLength: 1, "stroke-dasharray": 1, "stroke-dashoffset": 1, opacity: 0.35 }, rules);
+        const rules2 = document.getElementById("rules2");
+        for (let i = 0; i < 6; i++) mk("line", { class: "ln rl2", x1: 60, y1: 720 + i * 110, x2: 1020, y2: 720 + i * 110, "stroke-width": 2, pathLength: 1, "stroke-dasharray": 1, "stroke-dashoffset": 1, opacity: 0.25 }, rules2);
+        const sp = document.getElementById("spokes");
+        for (let i = 0; i < 16; i++) { const a = (i / 16) * Math.PI * 2; mk("line", { class: "ln spk", x1: 540, y1: 900, x2: 540 + Math.cos(a) * 430, y2: 900 + Math.sin(a) * 430, "stroke-width": 2.5, pathLength: 1, "stroke-dasharray": 1, "stroke-dashoffset": 1 }, sp); }
+        const p3 = document.getElementById("plus3d");
+        const shade = (hex, k) => { const n = parseInt(hex.slice(1), 16); return `rgb(${Math.round(((n >> 16) & 255) * k)},${Math.round(((n >> 8) & 255) * k)},${Math.round((n & 255) * k)})`; };
+        for (let i = 0; i < 16; i++) { const ly = document.createElement("div"); ly.className = "ly"; ly.style.transform = `translateZ(${-i * 5}px)`; const col = i === 0 ? C.acc : shade(C.acc, 0.78 - i * 0.012); ly.innerHTML = `<i style="background:${col}"></i><i style="background:${col}"></i>`; p3.appendChild(ly); }
+        const st = document.getElementById("stars"), RS = KIT.rng(818);
+        for (let i = 0; i < 90; i++) { const cy = 260 + RS() * 1400, cx = 60 + RS() * 960, r = 2 + RS() * 4; if (cy > 1240 && cy < 1560) continue; mk("circle", { class: "star", cx, cy, r, style: `fill:${C.ink}` }, st); }
+        const nodes = document.getElementById("chk-nodes");
+        [[300, 900], [470, 1070], [800, 700]].forEach(([x, y], i) => mk("circle", { class: "node", cx: x, cy: y, r: 14, style: `fill:${i === 2 ? C.acc : C.ink}` }, nodes));
+      })();
+
+      function build() {
+        const tl = gsap.timeline({ paused: true }), X = "expo.out";
+        const draw = (sel, t, d, ease, stagger) => tl.fromTo(sel, { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: d, ease: ease || "power2.inOut", stagger: stagger || 0 }, t);
+
+        /* S1 */
+        KIT.logoBuild(tl, "#logo1", 0.05, 0.9);
+        draw("#s1-arc", at(1), 0.55, "power3.inOut");
+        tl.to("#s1-logo", { scale: 0.86, opacity: 0, duration: 0.3, ease: "power2.in" }, at(2) - 0.3);
+
+        /* S2 rosette */
+        draw("#ros .rs", at(2), 0.7, "power2.inOut", 0.03);
+        tl.fromTo("#ros-dots .rd", { scale: 0, transformOrigin: "center" }, { scale: 1, duration: 0.25, ease: "back.out(3)", stagger: 0.015 }, at(3));
+        tl.fromTo("#ros, #ros-dots", { rotation: 0, svgOrigin: "540 900" }, { rotation: 30, svgOrigin: "540 900", duration: 1.25, ease: "power1.inOut" }, at(2));
+
+        /* S3–S5 word morphs on the beat */
+        const W = ["#w1", "#w2", "#w3"].map((s) => KIT.split(document.querySelector(s)));
+        const wordIn = (chars, t) => tl.fromTo(chars, { opacity: 0, y: 30, filter: "blur(14px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.35, ease: X, stagger: 0.025 }, t);
+        const wordOut = (chars, t) => tl.to(chars, { opacity: 0, y: -24, filter: "blur(14px)", duration: 0.22, ease: "power2.in", stagger: 0.015 }, t);
+        tl.set([...W[1], ...W[2]], { opacity: 0 }, 0);
+        wordIn(W[0], at(4));
+        draw("#w-tick", at(5), 0.25, "power2.out");
+        wordOut(W[0], at(6) - 0.2); wordIn(W[1], at(6));
+        tl.to("#w-tick", { opacity: 0, duration: 0.15 }, at(6) - 0.2);
+        tl.fromTo("#flakes .flake", { scale: 0, opacity: 0, transformOrigin: "center" }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2)", stagger: 0.05 }, at(6));
+        tl.fromTo("#flakes .flake-in", { rotation: 0 }, { rotation: 60, svgOrigin: "0 0", duration: 1.25, ease: "power1.inOut" }, at(6));
+        tl.to("#flakes .flake", { opacity: 0, duration: 0.2 }, at(8) - 0.2);
+        wordOut(W[1], at(8) - 0.2); wordIn(W[2], at(8));
+        draw("#rules .rl", at(8), 0.5, "power2.out", 0.03);
+        draw("#w-under", at(9), 0.35, "power2.out");
+        // wireframe polyhedra (canvas) under "safety"
+        const ctxP = KIT.canvas(document.getElementById("cv-poly"), 1080, 1920);
+        const ctxI = KIT.canvas(document.getElementById("cv-ico"), 1080, 1920);
+        const phi = (1 + Math.sqrt(5)) / 2, V = [];
+        [[0, 1, phi], [0, -1, phi], [0, 1, -phi], [0, -1, -phi], [1, phi, 0], [-1, phi, 0], [1, -phi, 0], [-1, -phi, 0], [phi, 0, 1], [-phi, 0, 1], [phi, 0, -1], [-phi, 0, -1]].forEach((v) => V.push(v));
+        const E = []; for (let i = 0; i < 12; i++) for (let j = i + 1; j < 12; j++) { const d = Math.hypot(V[i][0] - V[j][0], V[i][1] - V[j][1], V[i][2] - V[j][2]); if (Math.abs(d - 2) < 0.01) E.push([i, j]); }
+        function ico(ctx, cx, cy, r, ry, rx, lw, dots) {
+          const P = V.map(([x, y, z]) => { let X1 = x * Math.cos(ry) + z * Math.sin(ry), Z1 = -x * Math.sin(ry) + z * Math.cos(ry); let Y1 = y * Math.cos(rx) - Z1 * Math.sin(rx); Z1 = y * Math.sin(rx) + Z1 * Math.cos(rx); const s = 6 / (6 + Z1); return [cx + X1 * r * s / phi, cy + Y1 * r * s / phi, Z1]; });
+          ctx.strokeStyle = C.ink; ctx.lineWidth = lw; ctx.lineCap = "round";
+          E.forEach(([a, b]) => { ctx.globalAlpha = (P[a][2] + P[b][2]) / 2 > 0 ? 0.35 : 1; ctx.beginPath(); ctx.moveTo(P[a][0], P[a][1]); ctx.lineTo(P[b][0], P[b][1]); ctx.stroke(); });
+          ctx.globalAlpha = 1;
+          if (dots) P.forEach((p, i) => { ctx.fillStyle = i % 3 === 0 ? C.acc : C.ink; ctx.beginPath(); ctx.arc(p[0], p[1], i % 3 === 0 ? 11 : 6, 0, 6.283); ctx.fill(); });
+        }
+        function drawPoly(t) {
+          ctxP.clearRect(0, 0, 1080, 1920);
+          if (t >= at(4) - 0.01 && t < at(6) + 0.01) { const lt = t - at(4), k = KIT.ease.out3(KIT.clamp(lt / 0.4)); ctxP.globalAlpha = 1; ico(ctxP, 250, 1430, 130 * k, lt * 1.6, 0.4, 3, false); ico(ctxP, 830, 1430, 130 * k, -lt * 1.4 + 1, -0.3, 3, false); ico(ctxP, 540, 420, 90 * k, lt * 2, 0.2, 2.5, false); }
+          ctxI.clearRect(0, 0, 1080, 1920);
+          if (t >= at(10) - 0.01 && t < at(12) + 0.2) { const lt = t - at(10), k = KIT.ease.out3(KIT.clamp(lt / 0.35)), fade = 1 - KIT.clamp((t - at(12)) / 0.2); ctxI.globalAlpha = fade; ico(ctxI, 540, 860, 400 * k, lt * 1.3 + 0.3, 0.35 + lt * 0.2, 4, true); ctxI.globalAlpha = 1; }
+        }
+
+        /* S6–S7: icosahedron, caption, spokes → 3D plus */
+        tl.fromTo("#s6-cap-t", { yPercent: 135 }, { yPercent: 0, duration: 0.5, ease: X }, at(10) + 0.1);
+        draw("#spokes .spk", at(12), 0.35, "power2.out", 0.012);
+        tl.to("#spokes", { opacity: 0, duration: 0.25 }, at(12) + 0.45);
+        tl.fromTo("#plus3d", { scale: 0, rotationY: -120, rotationX: 20 }, { scale: 1, rotationY: 0, rotationX: 20, duration: 0.6, ease: X }, at(12) + 0.25);
+        tl.to("#plus3d", { rotationY: 70, rotationX: -10, duration: 0.6, ease: "power1.inOut" }, at(12) + 0.85);
+
+        /* S8 constellation check */
+        tl.fromTo("#stars .star", { opacity: 0, scale: 0, transformOrigin: "center" }, { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2)", stagger: { each: 0.004, from: "random" } }, at(14));
+        tl.fromTo("#chk-nodes .node", { scale: 0, transformOrigin: "center" }, { scale: 1, duration: 0.25, ease: "back.out(3)", stagger: 0.1 }, at(14) + 0.1);
+        draw("#chk-a", at(14) + 0.2, 0.2, "power2.out");
+        draw("#chk-b", at(14) + 0.38, 0.28, "power2.out");
+        tl.fromTo("#s8-cap-t", { yPercent: 135 }, { yPercent: 0, duration: 0.45, ease: X }, at(15) - 0.15);
+
+        /* S9 construction + dot riding the ring */
+        draw("#g-ring", at(16), 0.5, "power3.inOut");
+        draw("#g-sq", at(16) + 0.1, 0.4); draw(["#g-d1", "#g-d2"], at(16) + 0.15, 0.4); draw("#g-small", at(16) + 0.25, 0.35);
+        const dotP = { a: -90 };
+        tl.fromTo(dotP, { a: -90 }, { a: 200, duration: 1.2, ease: "power2.inOut", onUpdate: () => { const r = (dotP.a * Math.PI) / 180; const d = document.getElementById("g-dot"); d.setAttribute("cx", 540 + Math.cos(r) * 300); d.setAttribute("cy", 760 + Math.sin(r) * 300); } }, at(16));
+        tl.fromTo(".s9l", { yPercent: 135 }, { yPercent: 0, duration: 0.4, ease: X, stagger: 0.12 }, at(16) + 0.1);
+
+        /* S10 Delivered. */
+        draw("#rules2 .rl2", at(18), 0.45, "power2.out", 0.03);
+        tl.fromTo("#s10-t", { yPercent: 135 }, { yPercent: 0, duration: 0.5, ease: X }, at(18));
+        tl.fromTo("#s10-dot", { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(3.5)" }, at(19));
+        tl.to("#s10-dot", { y: -40, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1 }, at(20));
+
+        /* S11 plus spins → logo */
+        tl.fromTo("#s11-plus", { scale: 0, rotation: -90 }, { scale: 1.4, rotation: 90, duration: 0.4, ease: X }, at(21));
+        tl.to("#s11-plus", { scale: 0, rotation: 180, duration: 0.25, ease: "power2.in" }, at(21) + 0.4);
+        KIT.logoBuild(tl, "#logo11", at(21) + 0.5, 1);
+        tl.fromTo("#s11-cap-t", { yPercent: 135 }, { yPercent: 0, duration: 0.45, ease: X }, at(22) + 0.45);
+
+        const clock = { t: 0 }, tick = () => drawPoly(clock.t);
+        tl.to(clock, { t: 15, duration: 15, ease: "none", onUpdate: tick }, 0);
+        tick();
+        window.__timelines["main"] = tl;
+      }
+      KIT.ready(['700 210px "Newsreader"', '600 74px "Newsreader"']).then(build);
+    </script>
+  </body>
+</html>

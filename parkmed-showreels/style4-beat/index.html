@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en" data-composition-variables='[{"id":"theme","type":"enum","label":"Theme","default":"parkmed","options":[{"value":"parkmed","label":"Parkmed"},{"value":"ref","label":"Reference"}]}]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Parkmed Showreel — Style 4 · On The Beat</title>
+    <link rel="stylesheet" href="assets/fonts.css" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/kit.js"></script>
+    <script src="assets/beats.js"></script>
+    <style>
+      :root {
+        --bg: #061a2e; --bg2: #0b2742; --fg: #ffffff; --ink: #061a2e;
+        --a1: #1fb25a; --a2: #9ff0c4; --a3: #2f8cff; --a4: #0065b2; --light: #ffffff; --lightInk: #061a2e; --accLight: #0065b2;
+        --hud: #ffffff;
+      }
+      [data-theme="ref"] {
+        --bg: #0d0e12; --bg2: #16171d; --fg: #f4f1ea; --ink: #0d0e12;
+        --a1: #f0452b; --a2: #d6ff3a; --a3: #3346ff; --a4: #f4f1ea; --light: #efe9df; --lightInk: #0d0e12; --accLight: #e03a20;
+      }
+      html, body { margin: 0; background: var(--bg); }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--fg); }
+      .scene { position: absolute; inset: 0; overflow: hidden; background: var(--bg); }
+      .cv { position: absolute; left: 0; top: 0; }
+      .anton { font-family: "Anton", sans-serif; font-weight: 400; }
+      .mono { font-family: "IBM Plex Mono", monospace; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
+      .center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+      .fig { position: absolute; font-size: 18px; color: var(--fg); opacity: 0.75; }
+
+      /* HUD */
+      #hud { position: absolute; inset: 0; z-index: 60; pointer-events: none; color: var(--hud); }
+      #hud .t { position: absolute; font-size: 18px; white-space: nowrap; }
+      #hud-tl { left: 64px; top: 46px; }
+      #hud-tr { right: 64px; top: 46px; font-variant-numeric: tabular-nums; }
+      #ruler { position: absolute; left: 80px; right: 80px; bottom: 44px; height: 24px; }
+      #ruler .base { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: currentColor; opacity: 0.35; }
+      #ruler .tk { position: absolute; bottom: 0; width: 2px; height: 8px; background: currentColor; opacity: 0.45; }
+      #ruler .tk.cut { height: 16px; opacity: 0.9; }
+      #playhead { position: absolute; bottom: -4px; left: 0; width: 4px; height: 26px; background: var(--a1); }
+
+      /* S1 bezier */
+      #s1-svg { position: absolute; inset: 0; width: 1920px; height: 1080px; }
+      #s1-label { position: absolute; left: 0; right: 0; top: 850px; text-align: center; font-size: 22px; color: var(--fg); opacity: 0.8; }
+
+      /* S2 split title */
+      #s2 { background: var(--a1); }
+      .s2w { position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; font-size: 400px; line-height: 1; color: var(--ink); letter-spacing: 0.01em; }
+      #s2-top { clip-path: inset(0 0 50% 0); }
+      #s2-bot { clip-path: inset(50% 0 0 0); }
+      #s2-slit { position: absolute; left: 0; right: 0; top: 490px; height: 100px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--ink); }
+      #s2-slit span { font-size: 30px; color: var(--a1); white-space: nowrap; }
+
+      /* tiles */
+      .tiles { position: absolute; left: 0; top: -20px; display: grid; grid-template-columns: repeat(12, 160px); grid-template-rows: repeat(7, 160px); }
+      .tile { position: relative; width: 160px; height: 160px; overflow: hidden; }
+      .tile .sh { position: absolute; inset: 0; }
+      #s4-bar { position: absolute; left: 50%; top: 50%; width: 1100px; height: 230px; margin: -115px 0 0 -550px; background: var(--ink); transform-origin: left center; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+      #s4-bar span { font-size: 180px; line-height: 1; color: var(--fg); display: block; }
+
+      /* tunnel */
+      .frame { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; margin: -450px 0 0 -800px; border-radius: 180px; border: 10px solid var(--a1); box-sizing: border-box; }
+      .sl { position: absolute; left: 960px; top: 540px; width: 260px; height: 3px; background: var(--fg); transform-origin: 0 50%; }
+      #s5-word { font-size: 240px; color: var(--fg); }
+
+      /* word wall */
+      #s7 { background: var(--light); }
+      #s7-wall { position: absolute; left: -500px; top: -420px; width: 2920px; transform: rotate(-8deg); }
+      .wrow { white-space: nowrap; font-size: 150px; line-height: 1.02; color: var(--lightInk); }
+      .wrow.o { color: var(--light); -webkit-text-stroke: 3px var(--lightInk); }
+      .wrow.acc { color: var(--accLight); }
+
+      /* liquid */
+      #s8-word { font-size: 520px; color: rgba(255,255,255,0.14); -webkit-text-stroke: 6px var(--fg); letter-spacing: 0.02em; }
+
+      /* rapid words */
+      .rw { font-size: 260px; line-height: 1; }
+      #w1 .rw { color: var(--fg); }
+      #w1-bar { position: absolute; left: 50%; top: 720px; width: 820px; height: 16px; margin-left: -410px; background: var(--a1); transform-origin: left center; }
+      #w2 { background: var(--light); }
+      #w2 .rw { color: var(--lightInk); }
+      #w2-box { position: absolute; left: 50%; top: 50%; width: 760px; height: 400px; margin: -200px 0 0 -380px; border: 8px solid var(--a1); box-sizing: border-box; }
+      .cm { position: absolute; width: 46px; height: 46px; border: 0 solid var(--lightInk); }
+      #w3 { background: var(--a1); } #w3 .rw { color: var(--ink); }
+      #w4 .rw { color: var(--fg); }
+      #w5 { background: var(--a2); } #w5 .rw { color: var(--ink); }
+      .toggle { position: relative; width: 300px; height: 150px; border-radius: 75px; background: var(--ink); margin-left: 70px; }
+      .toggle .k { position: absolute; left: 14px; top: 14px; width: 122px; height: 122px; border-radius: 50%; background: var(--a2); }
+      #w6 .rw { color: var(--fg); font-size: 170px; letter-spacing: 0.22em; padding-left: 0.22em; }
+      #w6-ring { position: absolute; left: 960px; top: 540px; width: 0; height: 0; }
+      #w6-ring i { position: absolute; left: -2px; top: -360px; width: 4px; height: 26px; background: var(--fg); transform-origin: 2px 360px; opacity: 0.6; }
+      #w7 .rw { color: var(--fg); position: relative; z-index: 2; background: var(--bg); padding: 0 34px; }
+      .bars { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; gap: 8px; }
+      .bars i { display: block; width: 10px; height: 200px; background: var(--a1); border-radius: 5px; }
+
+      /* end */
+      #s11-line { position: absolute; left: 510px; top: 470px; width: 900px; height: 3px; background: var(--fg); transform-origin: left center; }
+      #s11-plate { position: absolute; left: 540px; top: 280px; width: 840px; height: 380px; background: #ffffff; border-radius: 40px; display: flex; align-items: center; justify-content: center; }
+      #s11-title { position: absolute; left: 0; right: 0; top: 708px; text-align: center; font-size: 76px; line-height: 1; color: var(--a1); letter-spacing: 0.04em; }
+      #s11-sub { position: absolute; left: 0; right: 0; top: 812px; text-align: center; font-size: 24px; color: var(--fg); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="15">
+      <div id="hud" class="mono">
+        <div class="t" id="hud-tl" data-layout-allow-overlap>Parkmed&nbsp;&nbsp;▪&nbsp;&nbsp;Showreel</div>
+        <div class="t" id="hud-tr" data-layout-allow-overlap>00:00:00:00</div>
+        <div id="ruler"><div class="base"></div><div id="playhead"></div></div>
+      </div>
+
+      <section id="s1" class="scene clip" data-start="0" data-duration="1.6" data-track-index="1">
+        <svg id="s1-svg" viewBox="0 0 1920 1080">
+          <line id="h1" stroke="currentColor" stroke-width="2" style="color:var(--fg)" opacity="0.5" />
+          <line id="h2" stroke="currentColor" stroke-width="2" style="color:var(--fg)" opacity="0.5" />
+          <path id="curve" fill="none" stroke-width="5" stroke-linecap="round" style="stroke:var(--fg)" />
+          <circle id="p0" r="9" style="fill:var(--fg)" /><circle id="p3" r="9" style="fill:var(--fg)" />
+          <circle id="c1" r="11" fill="none" stroke-width="3" style="stroke:var(--fg)" /><circle id="c2" r="11" fill="none" stroke-width="3" style="stroke:var(--fg)" />
+          <circle id="dot" r="16" style="fill:var(--a1)" />
+        </svg>
+        <div id="s1-label" class="mono">cubic-bezier(0.55, 0, 0.45, 1)</div>
+      </section>
+
+      <section id="s2" class="scene clip" data-start="1.6" data-duration="0.8" data-track-index="1">
+        <div class="s2w anton" id="s2-top" data-layout-allow-overlap>PARKMED</div>
+        <div class="s2w anton" id="s2-bot" data-layout-allow-overlap>PARKMED</div>
+        <div id="s2-slit"><span class="mono">NABH Accredited&nbsp;&nbsp;·&nbsp;&nbsp;Healthcare Delivered</span></div>
+      </section>
+
+      <section id="s3" class="scene clip" data-start="2.4" data-duration="1.2" data-track-index="1">
+        <canvas id="cv3" class="cv"></canvas>
+        <div class="fig mono" style="left:120px; top:150px">fig.02 — particle field</div>
+        <div class="fig mono" style="right:120px; bottom:130px">2,600 pts · seed 2026</div>
+      </section>
+
+      <section id="s4" class="scene clip" data-start="3.6" data-duration="1.2" data-track-index="1">
+        <div class="tiles" id="tiles4"></div>
+        <div id="s4-bar"><span class="anton" id="s4-word">ACCREDITED</span></div>
+      </section>
+
+      <section id="s5" class="scene clip" data-start="4.8" data-duration="0.8" data-track-index="1">
+        <div id="tunnel"></div>
+        <div class="center"><div id="s5-word" class="anton">SAFETY</div></div>
+      </section>
+
+      <section id="s6" class="scene clip" data-start="5.6" data-duration="0.8" data-track-index="1">
+        <canvas id="cv6" class="cv"></canvas>
+        <div class="fig mono" style="left:120px; top:150px">fig.04 — 196 units · sine field</div>
+      </section>
+
+      <section id="s7" class="scene clip" data-start="6.4" data-duration="1.2" data-track-index="1">
+        <div id="s7-wall" class="anton"></div>
+      </section>
+
+      <section id="s8" class="scene clip" data-start="7.6" data-duration="0.8" data-track-index="1">
+        <canvas id="cv8" class="cv"></canvas>
+        <div class="center"><div id="s8-word" class="anton">CARE</div></div>
+        <div class="fig mono" style="right:120px; top:150px">fig.06 — flow field</div>
+      </section>
+
+      <section id="w1" class="scene clip" data-start="8.4" data-duration="0.4" data-track-index="1"><div class="center"><div class="rw anton">COMMITTED</div></div><div id="w1-bar"></div></section>
+      <section id="w2" class="scene clip" data-start="8.8" data-duration="0.4" data-track-index="1"><div id="w2-box"></div><div class="center"><div class="rw anton">TO</div></div>
+        <div class="cm" style="left:520px;top:300px;border-left-width:5px;border-top-width:5px"></div><div class="cm" style="right:520px;top:300px;border-right-width:5px;border-top-width:5px"></div>
+        <div class="cm" style="left:520px;bottom:300px;border-left-width:5px;border-bottom-width:5px"></div><div class="cm" style="right:520px;bottom:300px;border-right-width:5px;border-bottom-width:5px"></div></section>
+      <section id="w3" class="scene clip" data-start="9.2" data-duration="0.4" data-track-index="1"><div class="center"><div class="rw anton">QUALITY.</div></div></section>
+      <section id="w4" class="scene clip" data-start="9.6" data-duration="0.4" data-track-index="1"><div class="center"><div class="rw anton" id="w4-word">FOCUSED</div></div></section>
+      <section id="w5" class="scene clip" data-start="10.0" data-duration="0.4" data-track-index="1"><div class="center"><div class="rw anton">ON</div><div class="toggle"><div class="k" id="w5-k"></div></div></div></section>
+      <section id="w6" class="scene clip" data-start="10.4" data-duration="0.4" data-track-index="1"><div id="w6-ring"></div><div class="center"><div class="rw anton">PATIENT</div></div></section>
+      <section id="w7" class="scene clip" data-start="10.8" data-duration="0.4" data-track-index="1"><div class="bars" id="barsL" style="left:60px"></div><div class="bars" id="barsR" style="right:60px"></div><div class="center"><div class="rw anton">SAFETY.</div></div></section>
+
+      <section id="s10" class="scene clip" data-start="11.2" data-duration="1.6" data-track-index="1">
+        <div class="tiles" id="tiles10"></div>
+      </section>
+
+      <section id="s11" class="scene clip" data-start="12.8" data-duration="2.2" data-track-index="1">
+        <div id="s11-line"></div>
+        <div id="s11-plate"></div>
+        <div id="s11-title" class="anton">NABH ACCREDITED</div>
+        <div id="s11-sub" class="mono">Patient safety&nbsp;&nbsp;·&nbsp;&nbsp;Quality of care&nbsp;&nbsp;·&nbsp;&nbsp;Delivered</div>
+      </section>
+
+      <!-- Score: synthesized in code (tools/score.py s4) — no samples -->
+      <audio id="score" src="assets/audio/score.wav" data-start="0" data-duration="15" data-track-index="10" data-volume="1"></audio>
+    </div>
+
+    <script>
+      KIT.theme();
+      const B = BEATS.beat; // 0.4 s @ 150 BPM
+      const at = (b) => +(b * B).toFixed(4);
+      const C = { a1: KIT.css("--a1"), a2: KIT.css("--a2"), a3: KIT.css("--a3"), a4: KIT.css("--a4"), fg: KIT.css("--fg"), bg: KIT.css("--bg"), bg2: KIT.css("--bg2"), light: KIT.css("--light"), ink: KIT.css("--ink") };
+      const isRef = document.documentElement.getAttribute("data-theme") === "ref";
+
+      /* ---------- static construction ---------- */
+      document.getElementById("s11-plate").innerHTML = KIT.logoHTML("logo11", 700);
+      // ruler ticks: every beat; cuts taller
+      (function () {
+        const r = document.getElementById("ruler");
+        BEATS.beats.forEach((t) => {
+          const d = document.createElement("div");
+          d.className = "tk" + (BEATS.cuts.some((c) => Math.abs(c - t) < 1e-4) ? " cut" : "");
+          d.style.left = (t / 15) * 100 + "%";
+          r.appendChild(d);
+        });
+      })();
+      // tiles
+      function buildTiles(id, seed) {
+        const R = KIT.rng(seed), host = document.getElementById(id);
+        const pal = isRef ? [C.a1, C.a3, C.a2, C.fg, C.bg, "#f4f1ea"] : [C.a1, "#0065b2", C.a2, "#ffffff", C.bg, "#2f8cff"];
+        const types = ["q", "h", "c", "r", "t", "d", "s", "q", "h"];
+        const rots = [];
+        for (let i = 0; i < 84; i++) {
+          const bgc = pal[Math.floor(R() * pal.length)];
+          let fgc = pal[Math.floor(R() * pal.length)];
+          if (fgc === bgc) fgc = pal[(pal.indexOf(bgc) + 2) % pal.length];
+          const ty = types[Math.floor(R() * types.length)];
+          const tile = document.createElement("div");
+          tile.className = "tile"; tile.style.background = bgc;
+          const sh = document.createElement("div"); sh.className = "sh";
+          let css = `background:${fgc};`;
+          if (ty === "q") css += "border-top-left-radius:100%;";
+          if (ty === "h") css += "top:50%;border-radius:80px 80px 0 0;";
+          if (ty === "c") css += "inset:18%;border-radius:50%;";
+          if (ty === "r") css = `inset:16%;border-radius:50%;border:24px solid ${fgc};background:transparent;`;
+          if (ty === "t") css += "clip-path:polygon(0 100%,100% 100%,0 0);";
+          if (ty === "d") css += "inset:36%;border-radius:50%;";
+          if (ty === "s") css += "inset:24%;";
+          sh.style.cssText = css;
+          tile.appendChild(sh); host.appendChild(tile);
+          rots.push(Math.floor(R() * 4) * 90);
+        }
+        return { R, rots };
+      }
+      const T4 = buildTiles("tiles4", 404), T10 = buildTiles("tiles10", 1010);
+      // tunnel
+      (function () {
+        const host = document.getElementById("tunnel");
+        for (let i = 0; i < 12; i++) { const f = document.createElement("div"); f.className = "frame"; f.style.borderColor = [C.a1, C.a3, C.fg][i % 3]; host.appendChild(f); }
+        for (let i = 0; i < 40; i++) { const l = document.createElement("div"); l.className = "sl"; host.appendChild(l); }
+      })();
+      // word wall
+      (function () {
+        const host = document.getElementById("s7-wall");
+        const words = "QUALITY · PATIENT SAFETY · NABH ACCREDITED · TRUST · CARE · ";
+        ["o", "", "o", "acc", "o", "", "o", "", "o"].forEach((cls, i) => {
+          const d = document.createElement("div"); d.className = "wrow " + cls; d.setAttribute("data-layout-allow-overlap", ""); d.setAttribute("data-layout-allow-overflow", ""); d.textContent = words.repeat(3);
+          host.appendChild(d);
+        });
+      })();
+      // ring ticks + waveform bars
+      (function () {
+        const r = document.getElementById("w6-ring");
+        for (let i = 0; i < 72; i++) { const t = document.createElement("i"); t.style.transform = `rotate(${i * 5}deg)`; r.appendChild(t); }
+        ["barsL", "barsR"].forEach((id) => { const h = document.getElementById(id); for (let i = 0; i < 26; i++) h.appendChild(document.createElement("i")); });
+      })();
+
+      function build() {
+        const tl = gsap.timeline({ paused: true });
+        const R = KIT.rng(2026);
+
+        /* ---------- S1 bezier: line → easing curve, dot rides it ---------- */
+        const P = {
+          a: [[560, 540], [827, 540], [1093, 540], [1360, 540]],
+          b: [[560, 760], [1010, 760], [910, 320], [1360, 320]],
+        };
+        const set = (id, attrs) => { const el = document.getElementById(id); for (const k in attrs) el.setAttribute(k, attrs[k]); };
+        function bez(p, u) { const v = 1 - u; return [0, 1].map((k) => v * v * v * p[0][k] + 3 * v * v * u * p[1][k] + 3 * v * u * u * p[2][k] + u * u * u * p[3][k]); }
+        function drawCurve(t) {
+          const draw = KIT.clamp(t / 0.36), m = KIT.ease.inOut3(KIT.clamp((t - 0.36) / 0.5));
+          const p = P.a.map((q, i) => [q[0] + (P.b[i][0] - q[0]) * m, q[1] + (P.b[i][1] - q[1]) * m]);
+          const cut = Math.max(0.001, KIT.ease.out3(draw));
+          // draw only the first `cut` of the path by splitting the curve (de Casteljau)
+          const sub = (pp, u) => { const l = (a, b) => [a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u]; const p01 = l(pp[0], pp[1]), p12 = l(pp[1], pp[2]), p23 = l(pp[2], pp[3]); const p012 = l(p01, p12), p123 = l(p12, p23); const pt = l(p012, p123); return [pp[0], p01, p012, pt]; };
+          const s = sub(p, cut);
+          set("curve", { d: `M${s[0]} C${s[1]} ${s[2]} ${s[3]}` });
+          const hv = KIT.clamp((t - 0.4) / 0.25);
+          set("h1", { x1: p[0][0], y1: p[0][1], x2: p[1][0], y2: p[1][1], opacity: 0.5 * hv });
+          set("h2", { x1: p[3][0], y1: p[3][1], x2: p[2][0], y2: p[2][1], opacity: 0.5 * hv });
+          set("p0", { cx: p[0][0], cy: p[0][1] }); set("p3", { cx: p[3][0], cy: p[3][1], opacity: draw >= 1 ? 1 : 0 });
+          set("c1", { cx: p[1][0], cy: p[1][1], opacity: hv }); set("c2", { cx: p[2][0], cy: p[2][1], opacity: hv });
+          const u = KIT.ease.inOut3(KIT.clamp((t - 0.8) / 0.6)), d = bez(p, u);
+          set("dot", { cx: d[0], cy: d[1], opacity: t > 0.78 ? 1 : 0 });
+        }
+        tl.fromTo("#s1-label", { opacity: 0, y: 10 }, { opacity: 0.8, y: 0, duration: 0.3, ease: "power2.out" }, 0.7);
+        tl.to("#s1-svg", { scale: 1.12, transformOrigin: "960px 540px", duration: 0.25, ease: "power2.in" }, at(4) - 0.25);
+
+        /* ---------- S2 split title ---------- */
+        tl.fromTo(".s2w", { scaleY: 1.5, yPercent: 8 }, { scaleY: 1, yPercent: 0, duration: 0.22, ease: "expo.out" }, at(4));
+        tl.to("#s2-top", { y: -64, x: -40, duration: 0.3, ease: "expo.out" }, at(5));
+        tl.to("#s2-bot", { y: 64, x: 40, duration: 0.3, ease: "expo.out" }, at(5));
+        tl.fromTo("#s2-slit", { scaleY: 0 }, { scaleY: 1, duration: 0.3, ease: "expo.out" }, at(5));
+
+        /* ---------- S3 particle sphere → NABH ---------- */
+        const ctx3 = KIT.canvas(document.getElementById("cv3"), 1920, 1080);
+        const NP = 2600, sph = [], tgt = KIT.textPoints("NABH", '400 380px "Anton"', 1300, 480, 8, 960, 540);
+        for (let i = 0; i < NP; i++) {
+          const y = 1 - (i / (NP - 1)) * 2, r = Math.sqrt(1 - y * y), th = i * 2.399963;
+          sph.push({ x: Math.cos(th) * r, y, z: Math.sin(th) * r, tx: tgt[i % tgt.length][0], ty: tgt[i % tgt.length][1], d: R() * 0.15, lat: y });
+        }
+        function drawSphere(t) {
+          ctx3.clearRect(0, 0, 1920, 1080);
+          if (t < at(6) - 0.01 || t > at(9) + 0.01) return;
+          const lt = t - at(6), rot = lt * 2.2, tilt = 0.35, F = 1100, RAD = 330 * (1 + 0.04 * Math.sin(lt * 9));
+          const cr = Math.cos(rot), sr = Math.sin(rot), ct = Math.cos(tilt), st = Math.sin(tilt);
+          for (const p of sph) {
+            let x = p.x * cr + p.z * sr, z = -p.x * sr + p.z * cr, y = p.y;
+            const y2 = y * ct - z * st; z = y * st + z * ct; y = y2;
+            const sc = F / (F + z * RAD), px = 960 + x * RAD * sc, py = 540 + y * RAD * sc;
+            const m = KIT.ease.inOut3(KIT.clamp((lt - 0.48 - p.d) / 0.42));
+            const X = px + (p.tx - px) * m, Y = py + (p.ty - py) * m;
+            const depth = (1 - z) / 2;
+            let col;
+            if (isRef) col = `hsl(${(p.lat * 140 + lt * 220 + x * 80) % 360},95%,${55 + depth * 15}%)`;
+            else col = p.lat > 0.33 ? C.a1 : p.lat > -0.33 ? C.a3 : C.a2;
+            ctx3.globalAlpha = 0.35 + 0.65 * Math.max(depth, m);
+            ctx3.fillStyle = m > 0.5 ? (isRef ? C.fg : (p.lat > 0 ? C.a1 : C.fg)) : col;
+            const s = (2.2 + depth * 2.6) * (1 - m) + 4.2 * m;
+            ctx3.fillRect(X - s / 2, Y - s / 2, s, s);
+          }
+          ctx3.globalAlpha = 1;
+        }
+
+        /* ---------- S4 Bauhaus tiles, rotations on every beat ---------- */
+        function tileShow(sel, T, t0, beatsList, collapseAt) {
+          const host = document.querySelector(sel), shapes = host.querySelectorAll(".sh"), tiles = host.querySelectorAll(".tile");
+          tl.fromTo(tiles, { scale: 0 }, { scale: 1, duration: 0.28, ease: "back.out(1.8)", stagger: { each: 0.004, from: "random" } }, t0);
+          shapes.forEach((s, i) => gsap.set(s, { rotation: T.rots[i] }));
+          beatsList.forEach((bt) => {
+            shapes.forEach((s, i) => {
+              if (T.R() < 0.45) { const from = T.rots[i], to = from + (T.R() < 0.5 ? 90 : 180); T.rots[i] = to; tl.fromTo(s, { rotation: from }, { rotation: to, duration: 0.22, ease: "back.out(1.6)", immediateRender: false }, bt); }
+            });
+          });
+          if (collapseAt) tl.to(tiles, { scale: 0, duration: 0.24, ease: "power3.in", stagger: { grid: [7, 12], from: "edges", amount: 0.12 } }, collapseAt);
+        }
+        tileShow("#tiles4", T4, at(9), [at(10), at(11)]);
+        tl.fromTo("#s4-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.2, ease: "expo.out" }, at(10));
+        tl.fromTo("#s4-word", { yPercent: 110 }, { yPercent: 0, duration: 0.22, ease: "expo.out" }, at(10) + 0.06);
+
+        /* ---------- S5 tunnel ---------- */
+        const frames = document.querySelectorAll("#tunnel .frame"), lines = document.querySelectorAll("#tunnel .sl");
+        const lineSeed = [...lines].map(() => [R() * 6.283, R()]);
+        function drawTunnel(t) {
+          if (t < at(12) - 0.01 || t > at(14) + 0.01) return;
+          const lt = t - at(12);
+          frames.forEach((f, i) => {
+            const z = ((i / frames.length) + lt * 0.95) % 1;
+            const s = 0.03 * Math.pow(45, z);
+            f.style.transform = `scale(${s}) rotate(${(1 - z) * 12}deg)`;
+            f.style.opacity = Math.min(1, z * 5) * (z > 0.9 ? (1 - z) / 0.1 : 1);
+          });
+          lines.forEach((l, i) => {
+            const [a, ph] = lineSeed[i], z = (ph + lt * 1.8) % 1;
+            l.style.transform = `rotate(${a}rad) translateX(${120 + z * 1000}px) scaleX(${0.3 + z * 1.4})`;
+            l.style.opacity = (z < 0.15 ? z / 0.15 : 1) * 0.7;
+          });
+        }
+        tl.fromTo("#s5-word", { scale: 0.25, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: "expo.out" }, at(12));
+
+        /* ---------- S6 isometric cube field ---------- */
+        const ctx6 = KIT.canvas(document.getElementById("cv6"), 1920, 1080);
+        const shade = (hex, k) => { const n = parseInt(hex.slice(1), 16); const r = Math.round(((n >> 16) & 255) * k), g = Math.round(((n >> 8) & 255) * k), b = Math.round((n & 255) * k); return `rgb(${r},${g},${b})`; };
+        const topC = C.fg, leftC = C.a1, rightC = shade(C.a1, 0.62), peakC = C.a2;
+        function drawCubes(t) {
+          ctx6.clearRect(0, 0, 1920, 1080);
+          if (t < at(14) - 0.01 || t > at(16) + 0.01) return;
+          const lt = t - at(14), G = 14, s = 44, dx = s * 0.866, dy = s * 0.5;
+          const zoom = 1 + lt * 0.12;
+          ctx6.save(); ctx6.translate(960, 300); ctx6.scale(zoom, zoom);
+          for (let sum = 0; sum <= 2 * (G - 1); sum++) for (let i = 0; i < G; i++) {
+            const j = sum - i; if (j < 0 || j >= G) continue;
+            const di = i - 6.5, dj = j - 6.5, dist = Math.sqrt(di * di + dj * dj);
+            const h = 24 + 120 * (0.5 + 0.5 * Math.sin(dist * 0.8 - lt * 11));
+            const x = (i - j) * dx, y = (i + j) * dy + 120;
+            ctx6.fillStyle = h > 128 ? peakC : topC;
+            ctx6.beginPath(); ctx6.moveTo(x, y - h); ctx6.lineTo(x + dx, y - h + dy); ctx6.lineTo(x, y - h + 2 * dy); ctx6.lineTo(x - dx, y - h + dy); ctx6.closePath(); ctx6.fill();
+            ctx6.fillStyle = leftC;
+            ctx6.beginPath(); ctx6.moveTo(x - dx, y - h + dy); ctx6.lineTo(x, y - h + 2 * dy); ctx6.lineTo(x, y + 2 * dy); ctx6.lineTo(x - dx, y + dy); ctx6.closePath(); ctx6.fill();
+            ctx6.fillStyle = rightC;
+            ctx6.beginPath(); ctx6.moveTo(x + dx, y - h + dy); ctx6.lineTo(x, y - h + 2 * dy); ctx6.lineTo(x, y + 2 * dy); ctx6.lineTo(x + dx, y + dy); ctx6.closePath(); ctx6.fill();
+          }
+          ctx6.restore();
+        }
+
+        /* ---------- S7 word wall ---------- */
+        document.querySelectorAll("#s7-wall .wrow").forEach((row, i) => {
+          const dir = i % 2 ? 1 : -1;
+          tl.fromTo(row, { x: -320 * dir }, { x: 320 * dir, duration: at(19) - at(16), ease: "none" }, at(16));
+        });
+        tl.fromTo("#s7-wall", { scale: 1, rotation: -8 }, { scale: 1.16, rotation: -6, duration: at(19) - at(16), ease: "power1.in" }, at(16));
+
+        /* ---------- S8 liquid flow field (low-res canvas, upscaled) ---------- */
+        const cv8 = document.getElementById("cv8"); cv8.width = 192; cv8.height = 108; cv8.style.width = "1920px"; cv8.style.height = "1080px";
+        const ctx8 = cv8.getContext("2d"), img8 = ctx8.createImageData(192, 108);
+        const hexRGB = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+        const L1 = hexRGB(isRef ? C.a3 : "#0065b2"), L2 = hexRGB(C.a1), L3 = hexRGB(isRef ? "#8a2be2" : C.bg2);
+        function drawLiquid(t) {
+          if (t < at(19) - 0.01 || t > at(21) + 0.01) return;
+          const lt = t - at(19), d = img8.data;
+          for (let y = 0; y < 108; y++) for (let x = 0; x < 192; x++) {
+            const u = x / 40, v = y / 40;
+            let w = Math.sin(u * 1.7 + lt * 2.1 + Math.sin(v * 2.3 - lt * 1.3) * 1.4) + Math.sin(v * 1.9 - lt * 1.7 + Math.sin(u * 1.1 + lt * 0.9) * 1.6);
+            w = (w + 2) / 4;
+            const k = Math.max(0, Math.min(1, w)), a = k < 0.5 ? k * 2 : (k - 0.5) * 2;
+            const c0 = k < 0.5 ? L3 : L1, c1 = k < 0.5 ? L1 : L2;
+            const o = (y * 192 + x) * 4;
+            d[o] = c0[0] + (c1[0] - c0[0]) * a; d[o + 1] = c0[1] + (c1[1] - c0[1]) * a; d[o + 2] = c0[2] + (c1[2] - c0[2]) * a; d[o + 3] = 255;
+          }
+          ctx8.putImageData(img8, 0, 0);
+        }
+        tl.fromTo("#s8-word", { scale: 1.25, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.25, ease: "expo.out" }, at(19));
+        tl.to("#s8-word", { scale: 1.06, duration: 0.55, ease: "none" }, at(19) + 0.25);
+
+        /* ---------- S9 rapid words: one per beat ---------- */
+        ["#w1", "#w2", "#w3", "#w4", "#w5", "#w6", "#w7"].forEach((id, i) => {
+          tl.fromTo(document.querySelector(id + " .rw"), { scale: 1.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.14, ease: "expo.out" }, at(21 + i));
+        });
+        tl.fromTo("#w1-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.25, ease: "expo.out" }, at(21) + 0.05);
+        tl.fromTo("#w2-box", { scale: 1.25, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.18, ease: "expo.out" }, at(22));
+        const w4 = KIT.split(document.getElementById("w4-word"));
+        tl.fromTo(w4, { yPercent: 90 }, { yPercent: 0, duration: 0.18, ease: "expo.out", stagger: 0.02 }, at(24));
+        tl.fromTo("#w5-k", { x: 0 }, { x: 150, duration: 0.16, ease: "back.out(2)" }, at(25) + 0.1);
+        tl.fromTo("#w6-ring", { rotation: 0, scale: 0.9 }, { rotation: 40, scale: 1, duration: 0.4, ease: "power2.out" }, at(26));
+        const barsL = document.querySelectorAll("#barsL i"), barsR = document.querySelectorAll("#barsR i");
+        function drawBars(t) {
+          if (t < at(27) - 0.01 || t > at(28) + 0.01) return;
+          const f = Math.floor(t * 60);
+          const put = (list, rev) => list.forEach((b, i) => { const k = rev ? list.length - 1 - i : i; const e = BEATS.env60[Math.max(0, Math.min(899, f - k * 2))] || 0; b.style.transform = `scaleY(${0.12 + e * 1.6 * (1 - k / 40)})`; });
+          put(barsL, true); put(barsR, false);
+        }
+
+        /* ---------- S10 tiles return and collapse ---------- */
+        tileShow("#tiles10", T10, at(28), [at(29), at(30), at(31)], at(31) + 0.12);
+
+        /* ---------- S11 end: line → plate → logo ---------- */
+        tl.fromTo("#s11-line", { scaleX: 0 }, { scaleX: 1, duration: 0.24, ease: "expo.out" }, at(32));
+        tl.to("#s11-line", { opacity: 0, duration: 0.1 }, at(32) + 0.3);
+        tl.fromTo("#s11-plate", { scaleY: 0.008, scaleX: 1.07 }, { scaleY: 1, scaleX: 1, duration: 0.36, ease: "expo.out" }, at(32) + 0.24);
+        KIT.logoBuild(tl, "#logo11", at(33), 1);
+        const tt = KIT.split(document.getElementById("s11-title"));
+        tl.fromTo(tt, { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.3, ease: "expo.out", stagger: 0.025 }, at(34));
+        tl.fromTo("#s11-sub", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, at(35));
+
+        /* ---------- HUD ---------- */
+        const hudEl = document.getElementById("hud"), tcEl = document.getElementById("hud-tr"), ph = document.getElementById("playhead");
+        const lightShots = [[at(4), at(6)], [at(16), at(19)], [at(22), at(23)], [at(23), at(24)], [at(25), at(26)]];
+        const tileShots = [[at(9), at(12)], [at(28), at(32)]];
+        function drawHud(t) {
+          tcEl.textContent = KIT.tc(t);
+          ph.style.transform = `translateX(${(t / 15) * 1756}px)`;
+          const inTiles = tileShots.some(([a, b]) => t >= a && t < b);
+          hudEl.style.opacity = inTiles ? 0 : 1;
+          hudEl.style.color = lightShots.some(([a, b]) => t >= a && t < b) ? C.ink : C.fg;
+        }
+
+        const clock = { t: 0 };
+        const draw = () => { const t = clock.t; drawCurve(t); drawSphere(t); drawTunnel(t); drawCubes(t); drawLiquid(t); drawBars(t); drawHud(t); };
+        tl.to(clock, { t: 15, duration: 15, ease: "none", onUpdate: draw }, 0);
+        draw();
+        window.__timelines["main"] = tl;
+      }
+      KIT.ready(['400 380px "Anton"', '500 20px "IBM Plex Mono"']).then(build);
+    </script>
+  </body>
+</html>

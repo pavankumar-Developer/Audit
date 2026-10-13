@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en" data-composition-variables='[{"id":"theme","type":"enum","label":"Theme","default":"parkmed","options":[{"value":"parkmed","label":"Parkmed"},{"value":"ref","label":"Reference"}]}]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Parkmed Showreel — Style 3 · Product</title>
+    <link rel="stylesheet" href="assets/fonts.css" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/kit.js"></script>
+    <script src="assets/beats.js"></script>
+    <style>
+      :root { --bg: #ffffff; --ink: #0f1c2b; --grey: #7a8593; --acc: #0065b2; --acc2: #1fb25a; --glowA: #9fe3bd; --glowB: #a9cff2; --tileA: #e8f6ee; --tileB: #e7f0fa; }
+      [data-theme="ref"] { --bg: #ffffff; --ink: #111111; --grey: #858585; --acc: #f04a24; --acc2: #ff8a5c; --glowA: #ffb48f; --glowB: #ffd9c6; --tileA: #fff1ea; --tileB: #ffe6da; }
+      html, body { margin: 0; background: var(--bg); }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--ink); font-family: "Plus Jakarta Sans", sans-serif; }
+      .scene { position: absolute; inset: 0; overflow: hidden; }
+      .h { font-weight: 800; letter-spacing: -0.035em; line-height: 1.04; }
+      .grey { color: var(--grey); }
+      .acc { color: var(--acc); }
+      .w { display: inline-block; }
+
+      #glow { position: absolute; inset: 0; z-index: 0; }
+      .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.85; }
+      #blobA { left: 360px; top: 760px; width: 1200px; height: 520px; background: var(--glowA); }
+      #blobB { left: 820px; top: -360px; width: 900px; height: 520px; background: var(--glowB); opacity: 0.55; }
+      .scene { z-index: 1; }
+
+      /* S1 dot → pill */
+      #s1-dot { position: absolute; left: 940px; top: 520px; width: 40px; height: 40px; border-radius: 50%; background: var(--acc); }
+      #s1-pill { position: absolute; left: 560px; top: 455px; width: 800px; height: 170px; background: #fff; border-radius: 85px; box-shadow: 0 24px 60px rgba(15,28,43,0.14); display: flex; align-items: center; justify-content: center; gap: 26px; }
+      #s1-pill img { height: 108px; width: auto; display: block; }
+
+      /* S2 headline */
+      #s2-head { position: absolute; left: 0; right: 0; top: 360px; text-align: center; font-size: 104px; }
+      .ipill { display: inline-flex; align-items: center; height: 108px; padding: 0 14px; margin: 0 10px; border-radius: 54px; background: #fff; box-shadow: 0 14px 40px rgba(15,28,43,0.14); vertical-align: middle; transform-origin: left center; }
+      .ipill .ic { width: 82px; height: 82px; border-radius: 50%; margin-left: -18px; border: 5px solid #fff; display: flex; align-items: center; justify-content: center; }
+      .ipill .ic:first-child { margin-left: 0; }
+      .ipill svg { width: 44px; height: 44px; }
+
+      /* S3 carousel */
+      #s3-text { position: absolute; left: 140px; top: 410px; font-size: 76px; width: 720px; }
+      #carousel { position: absolute; left: 1440px; top: 540px; width: 0; height: 0; }
+      .card { position: absolute; left: -165px; top: -230px; width: 330px; height: 460px; border-radius: 40px; box-shadow: 0 30px 60px rgba(15,28,43,0.16); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: 34px; box-sizing: border-box; }
+      .card .ico { width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #fff; }
+      .card .ico svg { width: 64px; height: 64px; }
+      .card .lb { font-weight: 800; font-size: 52px; letter-spacing: -0.03em; color: var(--ink); }
+      .card .sm { font-weight: 700; font-size: 22px; color: var(--ink); opacity: 1; margin-top: 6px; }
+
+      /* S4 fan */
+      #s4-text { position: absolute; left: 0; right: 0; top: 150px; text-align: center; font-size: 76px; }
+      #fan { position: absolute; left: 960px; top: 1180px; width: 0; height: 0; }
+      #fan .card { top: -820px; transform-origin: 50% 1100px; }
+
+      /* S5 accreditation card */
+      #s5-text { position: absolute; left: 150px; top: 380px; font-size: 104px; }
+      #s5-card { position: absolute; left: 980px; top: 250px; width: 780px; background: #fff; border-radius: 44px; box-shadow: 0 40px 90px rgba(15,28,43,0.16); padding: 48px; box-sizing: border-box; }
+      .r5top { display: flex; align-items: center; justify-content: space-between; font-weight: 700; font-size: 30px; color: var(--grey); }
+      .sw { position: relative; width: 104px; height: 58px; border-radius: 29px; background: #cfd5dc; }
+      .sw .on { position: absolute; inset: 0; border-radius: 29px; background: var(--acc2); opacity: 0; }
+      .sw .k { position: absolute; left: 5px; top: 5px; width: 48px; height: 48px; border-radius: 50%; background: #fff; box-shadow: 0 3px 8px rgba(0,0,0,0.18); }
+      .r5stat { display: flex; align-items: center; gap: 24px; margin: 36px 0 40px; }
+      .r5stat .big { font-weight: 800; font-size: 88px; letter-spacing: -0.04em; }
+      .tiles5 { display: flex; gap: 22px; }
+      .t5 { position: relative; flex: 1; height: 250px; border-radius: 28px; padding: 22px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-end; }
+      .t5 .lb { font-weight: 800; font-size: 32px; letter-spacing: -0.02em; line-height: 1.05; }
+      .t5 .bd { position: absolute; right: 16px; top: 16px; width: 54px; height: 54px; border-radius: 50%; background: var(--acc2); display: flex; align-items: center; justify-content: center; border: 4px solid #fff; }
+      .t5 .ico2 { width: 70px; height: 70px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; margin-bottom: auto; }
+      .t5 .ico2 svg { width: 40px; height: 40px; }
+
+      /* S6 collage */
+      #collage { position: absolute; left: 820px; top: -360px; width: 1500px; display: grid; grid-template-columns: repeat(5, 260px); gap: 26px; transform: rotate(-14deg); }
+      .ct { height: 340px; border-radius: 34px; box-shadow: 0 20px 44px rgba(15,28,43,0.14); display: flex; flex-direction: column; justify-content: space-between; padding: 26px; box-sizing: border-box; }
+      .ct .lb { font-weight: 800; font-size: 40px; letter-spacing: -0.03em; }
+      .ct .ico { width: 84px; height: 84px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; }
+      .ct .ico svg { width: 46px; height: 46px; }
+      #s6-fade { position: absolute; left: 0; top: 0; bottom: 0; width: 980px; background: linear-gradient(90deg, #fff 62%, rgba(255,255,255,0)); }
+      #s6-text { position: absolute; left: 150px; top: 420px; font-size: 124px; }
+
+      /* S7 end */
+      #s7-dot { position: absolute; left: 940px; top: 400px; width: 40px; height: 40px; border-radius: 50%; background: var(--acc); }
+      #s7-logo { position: absolute; left: 640px; top: 230px; }
+      #s7-tag { position: absolute; left: 0; right: 0; top: 640px; text-align: center; font-weight: 700; font-size: 44px; letter-spacing: -0.02em; }
+      #s7-cta { position: absolute; left: 0; right: 0; top: 740px; display: flex; justify-content: center; }
+      #s7-cta .pill { display: flex; align-items: center; gap: 16px; height: 84px; padding: 0 36px 0 18px; border-radius: 42px; background: var(--acc); color: #fff; font-weight: 800; font-size: 34px; letter-spacing: -0.01em; }
+      #s7-cta .pill .c { width: 54px; height: 54px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="15">
+      <div id="glow"><div class="blob" id="blobA"></div><div class="blob" id="blobB"></div></div>
+
+      <section id="s1" class="scene clip" data-start="0" data-duration="1.0714" data-track-index="1">
+        <div id="s1-pill"><img src="assets/logo/parkmed-logo.png" alt="Parkmed" /></div>
+        <div id="s1-dot"></div>
+      </section>
+
+      <section id="s2" class="scene clip" data-start="1.0714" data-duration="2.1429" data-track-index="1">
+        <div id="s2-head" class="h">
+          <div><span class="w s2w">Parkmed</span> <span class="w s2w">Healthcare</span><span class="ipill" id="s2-pill"></span></div>
+          <div><span class="w s2w">is</span> <span class="w s2w">now</span> <span class="w s2w">NABH</span> <span class="w s2w acc">accredited.</span></div>
+        </div>
+      </section>
+
+      <section id="s3" class="scene clip" data-start="3.2143" data-duration="2.1429" data-track-index="1">
+        <div id="s3-text" class="h"><div><span class="w s3w">Held</span> <span class="w s3w">to</span> <span class="w s3w">the</span> <span class="w s3w">nation’s</span></div><div id="s3-l2" class="grey"><span class="w s3w">highest</span> <span class="w s3w">standard.</span></div></div>
+        <div id="carousel"></div>
+      </section>
+
+      <section id="s4" class="scene clip" data-start="5.3571" data-duration="2.1429" data-track-index="1">
+        <div id="s4-text" class="h"><span class="w s4w">Patient</span> <span class="w s4w">safety.</span> <span class="w s4w grey">Quality</span> <span class="w s4w grey">of</span> <span class="w s4w grey">care.</span></div>
+        <div id="fan"></div>
+      </section>
+
+      <section id="s5" class="scene clip" data-start="7.5" data-duration="2.1429" data-track-index="1">
+        <div id="s5-text" class="h"><div><span class="w s5w">NABH</span></div><div><span class="w s5w acc">accredited.</span></div></div>
+        <div id="s5-card">
+          <div class="r5top"><span>NABH Accreditation</span><div class="sw"><div class="on" id="s5-on"></div><div class="k" id="s5-k"></div></div></div>
+          <div class="r5stat">
+            <svg width="96" height="96" viewBox="0 0 96 96"><circle cx="48" cy="48" r="40" fill="none" stroke="#e6eaee" stroke-width="10"/><circle id="s5-arc" cx="48" cy="48" r="40" fill="none" stroke-width="10" stroke-linecap="round" style="stroke:var(--acc2)" transform="rotate(-90 48 48)" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><path id="s5-chk" d="M30 49 L43 62 L66 37" fill="none" style="stroke:var(--ink)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/></svg>
+            <div class="big">Accredited</div>
+          </div>
+          <div class="tiles5" id="tiles5"></div>
+        </div>
+      </section>
+
+      <section id="s6" class="scene clip" data-start="9.6429" data-duration="1.6071" data-track-index="1">
+        <div id="collage"></div>
+        <div id="s6-fade"></div>
+        <div id="s6-text" class="h"><span class="w s6w">Delivered.</span></div>
+      </section>
+
+      <section id="s7" class="scene clip" data-start="11.25" data-duration="3.75" data-track-index="1">
+        <div id="s7-dot"></div>
+        <div id="s7-logo"></div>
+        <div id="s7-tag"><span class="grey">Patient safety. Quality of care.</span> <span>Delivered.</span></div>
+        <div id="s7-cta"><div class="pill" id="s7-pill"><div class="c"><svg width="32" height="32" viewBox="0 0 32 32"><path id="s7-chk" d="M8 17 L14 23 L25 10" fill="none" style="stroke:var(--acc)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/></svg></div>NABH Accredited</div></div>
+      </section>
+
+      <audio id="score" src="assets/audio/score.wav" data-start="0" data-duration="15" data-track-index="10" data-volume="1"></audio>
+    </div>
+
+    <script>
+      KIT.theme();
+      const B = BEATS.beat; // 0.5357 s @ 112 BPM
+      const at = (b) => +(b * B).toFixed(4);
+      const C = { ink: KIT.css("--ink"), acc: KIT.css("--acc"), acc2: KIT.css("--acc2"), tileA: KIT.css("--tileA"), tileB: KIT.css("--tileB"), glowA: KIT.css("--glowA"), glowB: KIT.css("--glowB") };
+      const isRef = document.documentElement.getAttribute("data-theme") === "ref";
+
+      /* icon set (simple geometric glyphs) */
+      const IC = {
+        check: (c) => `<svg viewBox="0 0 48 48"><path d="M12 25 L21 34 L37 15" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+        plus: (c) => `<svg viewBox="0 0 48 48"><path d="M24 10 V38 M10 24 H38" fill="none" stroke="${c}" stroke-width="7" stroke-linecap="round"/></svg>`,
+        heart: (c) => `<svg viewBox="0 0 48 48"><path d="M24 40 C 8 29, 6 18, 12 13 C 17 9, 22 11, 24 16 C 26 11, 31 9, 36 13 C 42 18, 40 29, 24 40 Z" fill="${c}"/></svg>`,
+        shield: (c) => `<svg viewBox="0 0 48 48"><path d="M24 6 L39 12 V23 C39 33 32 39 24 42 C16 39 9 33 9 23 V12 Z" fill="${c}"/><path d="M17 24 L22 29 L31 19" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+        star: (c) => `<svg viewBox="0 0 48 48"><path d="M24 6 L29 18 L42 19 L32 28 L35 41 L24 34 L13 41 L16 28 L6 19 L19 18 Z" fill="${c}"/></svg>`,
+      };
+      const gradA = isRef ? "linear-gradient(160deg,#ffe3d6,#ffb79a)" : "linear-gradient(160deg,#e6f7ee,#a9e6c4)";
+      const gradB = isRef ? "linear-gradient(160deg,#fff4ee,#ffd1bd)" : "linear-gradient(160deg,#eaf3fc,#b3d4f3)";
+      const gradC = isRef ? "linear-gradient(160deg,#fff,#ffe9df)" : "linear-gradient(160deg,#ffffff,#e3eef8)";
+      const items = [
+        ["shield", "Safety", "Patient safety", gradA],
+        ["star", "Quality", "Quality of care", gradB],
+        ["check", "NABH", "Accredited", gradC],
+        ["heart", "Care", "Delivered", gradA],
+        ["plus", "Trust", "Healthcare", gradB],
+      ];
+
+      /* static build */
+      document.getElementById("s2-pill").innerHTML = [["shield", C.acc2], ["check", C.acc], ["plus", isRef ? "#ffb08a" : "#7cc8ff"]].map(([k, c]) => `<div class="ic" style="background:${c}">${IC[k]("#ffffff")}</div>`).join("");
+      document.getElementById("carousel").innerHTML = items.map(([k, lb, sm, g]) => `<div class="card c3" style="background:${g}"><div class="ico">${IC[k](C.acc)}</div><div><div class="lb" data-layout-allow-overlap>${lb}</div><div class="sm" data-layout-allow-overlap>${sm}</div></div></div>`).join("");
+      document.getElementById("fan").innerHTML = [...items, ...items.slice(0, 2)].map(([k, lb, sm, g]) => `<div class="card c4" style="background:${g}"><div class="ico">${IC[k](C.acc)}</div><div><div class="lb" data-layout-allow-overlap>${lb}</div><div class="sm" data-layout-allow-overlap>${sm}</div></div></div>`).join("");
+      document.getElementById("tiles5").innerHTML = [["shield", "Patient safety", gradA], ["star", "Quality of care", gradB], ["heart", "Trust", gradC]].map(([k, lb, g]) => `<div class="t5" style="background:${g}"><div class="ico2">${IC[k](C.acc)}</div><div class="lb">${lb}</div><div class="bd">${IC.check("#ffffff")}</div></div>`).join("");
+      document.getElementById("collage").innerHTML = Array.from({ length: 20 }, (_, i) => { const [k, lb, sm, g] = items[(i * 3) % 5]; return `<div class="ct" style="background:${g}"><div class="ico">${IC[k](C.acc)}</div><div class="lb" data-layout-allow-overlap>${lb}</div></div>`; }).join("");
+      document.getElementById("s7-logo").innerHTML = KIT.logoHTML("logo7", 640);
+
+      function build() {
+        const tl = gsap.timeline({ paused: true }), X = "expo.out", P3 = "power3.out";
+
+        /* glow drift */
+        tl.fromTo("#blobA", { x: -160, scale: 1 }, { x: 160, scale: 1.12, duration: 15, ease: "sine.inOut" }, 0);
+        tl.fromTo("#blobB", { x: 120 }, { x: -220, duration: 15, ease: "sine.inOut" }, 0);
+
+        /* S1 dot → pill */
+        tl.fromTo("#s1-dot", { scale: 0 }, { scale: 1, duration: 0.3, ease: "back.out(3)" }, 0.05);
+        tl.to("#s1-dot", { scale: 0.6, opacity: 0, duration: 0.2, ease: "power2.in" }, at(1) - 0.05);
+        tl.fromTo("#s1-pill", { clipPath: "inset(65px 380px 65px 380px round 85px)" }, { clipPath: "inset(0px 0px 0px 0px round 85px)", duration: 0.45, ease: X }, at(1) - 0.08);
+        tl.fromTo("#s1-pill img", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: P3 }, at(1) + 0.1);
+
+        /* S2 headline, words blur in, icon pill pops */
+        tl.fromTo(".s2w", { opacity: 0, y: 26, filter: "blur(16px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.45, ease: P3, stagger: 0.07 }, at(2));
+        tl.fromTo("#s2-pill", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.4, ease: X }, at(3));
+        tl.fromTo("#s2-pill .ic", { scale: 0 }, { scale: 1, duration: 0.3, ease: "back.out(2.6)", stagger: 0.08 }, at(3) + 0.08);
+        tl.fromTo("#s2-head", { scale: 1.04 }, { scale: 1, duration: 2.1, ease: "power1.out" }, at(2));
+
+        /* S3 text + 3D carousel driven by a continuous index */
+        tl.fromTo(".s3w", { opacity: 0, y: 22, filter: "blur(12px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.4, ease: P3, stagger: 0.05 }, at(6));
+        tl.fromTo("#s3-l2", { color: KIT.css("--grey") }, { color: C.ink, duration: 0.5, ease: "power1.inOut" }, at(8));
+        const cards3 = document.querySelectorAll("#carousel .card");
+        const car = { i: -1.2 };
+        const layout3 = () => cards3.forEach((c, k) => {
+          const off = k - 2 - car.i * 0 - (car.i);
+          const a = Math.abs(off);
+          c.style.transform = `translateX(${off * 220}px) translateZ(0) scale(${1 - Math.min(a, 2.5) * 0.17}) rotateY(${-off * 14}deg)`;
+          c.style.zIndex = String(100 - Math.round(a * 10));
+          c.style.opacity = String(Math.max(0, 1 - Math.max(0, a - 1.3) * 1.4));
+        });
+        tl.fromTo(car, { i: -2.4 }, { i: 0, duration: 0.7, ease: X, onUpdate: layout3 }, at(6));
+        tl.to(car, { i: 0.6, duration: 0.45, ease: "power3.inOut", onUpdate: layout3 }, at(8));
+        tl.to(car, { i: 0.15, duration: 0.6, ease: "power3.inOut", onUpdate: layout3 }, at(9));
+
+        /* S4 fan of cards */
+        tl.fromTo(".s4w", { opacity: 0, y: 22, filter: "blur(12px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.4, ease: P3, stagger: 0.06 }, at(10));
+        const fan = document.querySelectorAll("#fan .card");
+        fan.forEach((c, k) => { const off = k - (fan.length - 1) / 2; tl.fromTo(c, { rotation: 0, y: 500, opacity: 0 }, { rotation: off * 9, y: Math.abs(off) * 18, opacity: 1, duration: 0.55, ease: X }, at(11) + Math.abs(off) * 0.04); });
+        tl.to("#fan", { rotation: -4, duration: 1.1, ease: "power1.inOut" }, at(12));
+
+        /* S5 accreditation card */
+        tl.fromTo(".s5w", { yPercent: 60, opacity: 0, filter: "blur(10px)" }, { yPercent: 0, opacity: 1, filter: "blur(0px)", duration: 0.45, ease: P3, stagger: 0.1 }, at(14));
+        tl.fromTo("#s5-card", { y: 700, rotation: 5 }, { y: 0, rotation: 0, duration: 0.6, ease: X }, at(14));
+        tl.to("#s5-k", { x: 46, duration: 0.2, ease: "back.out(2)" }, at(15));
+        tl.to("#s5-on", { opacity: 1, duration: 0.12 }, at(15));
+        tl.fromTo("#s5-arc", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.45, ease: "power2.inOut" }, at(15));
+        tl.fromTo("#s5-chk", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.2, ease: "power2.out" }, at(16) - 0.08);
+        tl.fromTo("#tiles5 .t5", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: P3, stagger: 0.08 }, at(15));
+        tl.fromTo("#tiles5 .bd", { scale: 0 }, { scale: 1, duration: 0.25, ease: "back.out(3)", stagger: B / 2 }, at(16)); // beat-grid: half-beats
+
+        /* S6 tilted collage drifting, Delivered. */
+        tl.fromTo("#collage", { x: 120, y: 260 }, { x: -140, y: -120, duration: 1.7, ease: "none" }, at(18));
+        tl.fromTo("#collage .ct", { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: X, stagger: { each: 0.015, from: "random" } }, at(18));
+        tl.fromTo(".s6w", { opacity: 0, x: -40, filter: "blur(14px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.45, ease: P3 }, at(18) + 0.1);
+
+        /* S7 dot → logo, tag, CTA */
+        tl.fromTo("#s7-dot", { scale: 0 }, { scale: 1, duration: 0.25, ease: "back.out(3)" }, at(21));
+        tl.to("#s7-dot", { scale: 0, duration: 0.2, ease: "power2.in" }, at(22) - 0.15);
+        KIT.logoBuild(tl, "#logo7", at(22) - 0.1, 1);
+        tl.fromTo("#s7-tag", { opacity: 0, y: 20, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: P3 }, at(23));
+        tl.fromTo("#s7-pill", { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2.2)" }, at(24));
+        tl.fromTo("#s7-chk", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.25, ease: "power2.out" }, at(24) + 0.15);
+        tl.fromTo("#blobA", { opacity: 0.85 }, { opacity: 1, duration: 1.5, ease: "power1.out" }, at(21));
+
+        layout3();
+        window.__timelines["main"] = tl;
+      }
+      KIT.ready(['800 104px "Plus Jakarta Sans"', '700 44px "Plus Jakarta Sans"', '500 22px "Plus Jakarta Sans"']).then(build);
+    </script>
+  </body>
+</html>
