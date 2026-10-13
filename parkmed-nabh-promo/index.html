@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Parkmed — NABH Accredited (Promo)</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Archivo Black"; font-weight: 400; src: url("assets/fonts/archivo-black-latin-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Instrument Serif"; font-weight: 400; font-style: italic; src: url("assets/fonts/instrument-serif-latin-400-italic.woff2") format("woff2"); }
+      @font-face { font-family: "Instrument Serif"; font-weight: 400; font-style: normal; src: url("assets/fonts/instrument-serif-latin-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "IBM Plex Sans"; font-weight: 500; src: url("assets/fonts/ibm-plex-sans-latin-500-normal.woff2") format("woff2"); }
+      @font-face { font-family: "IBM Plex Sans"; font-weight: 600; src: url("assets/fonts/ibm-plex-sans-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "IBM Plex Mono"; font-weight: 500; src: url("assets/fonts/ibm-plex-mono-latin-500-normal.woff2") format("woff2"); }
+
+      :root {
+        --ink: #121417;
+        --white: #ffffff;
+        --green: #1fb25a;  /* Parkmed logo green */
+        --blue: #0065b2;   /* Parkmed logo blue */
+        --mist: #e9eef4;
+        --display: "Archivo Black", Arial, sans-serif;
+        --serif: "Instrument Serif", Georgia, serif;
+        --sans: "IBM Plex Sans", Arial, sans-serif;
+        --mono: "IBM Plex Mono", monospace;
+      }
+      html, body { margin: 0; background: var(--white); }
+      body { color: var(--ink); -webkit-font-smoothing: antialiased; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--white); }
+      .scene { position: absolute; inset: 0; overflow: hidden; }
+      .fill { position: absolute; inset: 0; }
+      .abs { position: absolute; }
+      .mask { display: block; overflow: hidden; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+      .mask > span { display: block; }
+      .center-x { left: 0; right: 0; text-align: center; }
+
+      /* ---------- HUD (persistent showreel frame) ---------- */
+      #hud { position: absolute; inset: 0; z-index: 50; pointer-events: none; color: var(--ink); }
+      #hud .t { position: absolute; font: 500 22px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap; font-variant-numeric: tabular-nums; }
+      #hud .tl { left: 64px; top: 62px; }
+      #hud .tr { right: 64px; top: 62px; }
+      #hud .bl { left: 64px; bottom: 60px; }
+      #hud .br { right: 64px; bottom: 60px; }
+      #hud .corner { position: absolute; width: 36px; height: 36px; border-color: currentColor; border-style: solid; border-width: 0; }
+      #hud .c1 { left: 32px; top: 32px; border-left-width: 3px; border-top-width: 3px; }
+      #hud .c2 { right: 32px; top: 32px; border-right-width: 3px; border-top-width: 3px; }
+      #hud .c3 { left: 32px; bottom: 32px; border-left-width: 3px; border-bottom-width: 3px; }
+      #hud .c4 { right: 32px; bottom: 32px; border-right-width: 3px; border-bottom-width: 3px; }
+      #hud .rec { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: var(--green); margin-right: 12px; vertical-align: 1px; }
+
+      /* ---------- S1 dot → ring → check ---------- */
+      #s1 { z-index: 1; }
+      #s1-svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+      #s1-dot { position: absolute; left: 517px; top: 937px; width: 46px; height: 46px; border-radius: 50%; background: var(--blue); }
+
+      /* ---------- S2 blue flood + marquee ---------- */
+      #s2 { z-index: 2; background: var(--blue); }
+      .mq { position: absolute; left: -400px; white-space: nowrap; font: 400 176px/1 var(--display); letter-spacing: -0.01em; color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,0.42); }
+      .mq.solid { color: rgba(255,255,255,0.14); -webkit-text-stroke: 0; }
+      #s2-band { position: absolute; left: 0; right: 0; top: 820px; height: 300px; background: var(--blue); }
+      #s2-line { position: absolute; left: 0; right: 0; top: 836px; text-align: center; font: italic 400 158px/1.6 var(--serif); color: var(--white); letter-spacing: -0.01em; white-space: nowrap; }
+      #s2-line .w { display: inline-block; }
+
+      /* ---------- S3 NABH slam ---------- */
+      #s3 { z-index: 3; background: var(--white); }
+      #s3-group { position: absolute; inset: 0; }
+      #s3-word { position: absolute; left: 0; right: 0; top: 660px; text-align: center; font: 400 300px/1 var(--display); letter-spacing: -0.02em; color: var(--ink); }
+      #s3-word .l { display: inline-block; }
+      #s3-brush { position: absolute; left: 70px; top: 930px; width: 940px; height: 120px; }
+      #s3-acc-wrap { position: absolute; left: 0; right: 0; top: 1060px; display: flex; justify-content: center; }
+      #s3-acc { position: relative; font: 400 116px/1 var(--display); color: var(--blue); letter-spacing: 0.01em; padding: 10px 8px 6px; }
+      #s3-acc .blk { position: absolute; inset: 0; background: var(--green); transform-origin: left center; }
+
+      /* ---------- S4 particles ---------- */
+      #s4 { z-index: 4; background: var(--white); }
+      #s4-canvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+      #s4-top { position: absolute; top: 700px; font: italic 400 128px/1.1 var(--serif); color: var(--ink); }
+
+      /* ---------- S5 green flood + grid morph ---------- */
+      #s5 { z-index: 5; }
+      #s5-panel { position: absolute; left: -200px; right: -200px; top: 0; bottom: 0; background: var(--green); }
+      #s5-grid { position: absolute; left: 0; top: 60px; width: 1080px; height: 1800px; display: grid; grid-template-columns: repeat(9, 120px); grid-template-rows: repeat(15, 120px); }
+      .cell { position: relative; width: 120px; height: 120px; }
+      .cell .h, .cell .v { position: absolute; left: 50%; top: 50%; background: var(--white); }
+      .cell .h { width: 72px; height: 26px; margin: -13px 0 0 -36px; border-radius: 13px; }
+      .cell .v { width: 26px; height: 72px; margin: -36px 0 0 -13px; border-radius: 13px; }
+      #s5-text { position: absolute; left: 80px; right: 80px; top: 640px; color: var(--ink); }
+      #s5-pre { font: italic 400 124px/1.05 var(--serif); }
+      #s5-big { font: 400 200px/0.96 var(--display); letter-spacing: -0.025em; margin-top: 22px; }
+      #s5-textbg { position: absolute; left: 0; right: 0; top: 540px; height: 840px; background: var(--green); }
+
+      /* ---------- S6 3D card ---------- */
+      #s6 { z-index: 6; background: var(--blue); perspective: 1600px; }
+      #s6-card { position: absolute; left: 110px; top: 400px; width: 860px; box-sizing: border-box; padding: 64px 64px 56px; background: var(--white); border-radius: 48px; box-shadow: 0 40px 90px rgba(0,30,70,0.35); transform-origin: 50% 100%; }
+      #s6-logo { display: block; width: 330px; height: auto; }
+      #s6-title { font: 600 52px/1.1 var(--sans); margin: 54px 0 34px; color: var(--ink); }
+      .toggle-row { display: flex; align-items: center; justify-content: space-between; background: var(--mist); border-radius: 28px; padding: 30px 34px; }
+      .toggle-row span { font: 600 42px/1 var(--sans); color: var(--ink); }
+      .switch { position: relative; width: 132px; height: 72px; border-radius: 36px; background: #9aa3ad; }
+      .switch .on { position: absolute; inset: 0; border-radius: 36px; background: var(--green); opacity: 0; }
+      .switch .knob { position: absolute; left: 6px; top: 6px; width: 60px; height: 60px; border-radius: 50%; background: var(--white); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+      .row6 { display: flex; align-items: center; gap: 26px; padding: 30px 6px; border-bottom: 2px solid var(--mist); font: 500 44px/1.1 var(--sans); color: var(--ink); }
+      .row6:last-of-type { border-bottom: 0; }
+      .tick { position: relative; flex: none; width: 58px; height: 58px; }
+      .tick .ring { position: absolute; inset: 0; border-radius: 50%; border: 4px solid #c3cad2; box-sizing: border-box; }
+      .tick .dotf { position: absolute; inset: 0; border-radius: 50%; background: var(--green); }
+      .tick svg { position: absolute; inset: 0; width: 58px; height: 58px; }
+      #s6-stamp { position: absolute; left: 0; right: 0; top: 1270px; display: flex; justify-content: center; }
+      #s6-stamp > div { font: 400 112px/1 var(--display); color: var(--blue); background: var(--white); border: 10px solid var(--green); border-radius: 26px; padding: 22px 34px 16px; }
+
+      /* ---------- S7 3D word rings ---------- */
+      #s7 { z-index: 7; background: var(--white); }
+      #s7-stage { position: absolute; inset: 0; perspective: 1500px; }
+      .ring3d { position: absolute; left: 540px; width: 0; height: 0; transform-style: preserve-3d; }
+      .ring3d .wd { position: absolute; left: 0; top: 0; white-space: nowrap; font: 400 84px/1 var(--display); backface-visibility: hidden; display: flex; align-items: center; gap: 22px; }
+      .ring3d .wd i { display: block; width: 26px; height: 26px; border-radius: 50%; background: var(--green); }
+      #ringA .wd { color: var(--blue); }
+      #ringB .wd { color: var(--ink); }
+      #s7-core { position: absolute; left: 0; right: 0; top: 860px; text-align: center; font: 400 230px/1 var(--display); color: var(--ink); letter-spacing: -0.02em; }
+
+      /* ---------- S8 Healthcare Delivered ---------- */
+      #s8 { z-index: 9; }
+      .s8w { position: absolute; left: 0; right: 0; text-align: center; white-space: nowrap; }
+      #s8-a { top: 780px; height: 160px; font: 400 160px/160px var(--display); color: var(--ink); letter-spacing: -0.02em; }
+      #s8-a .l { display: inline-block; }
+      #s8-b { top: 950px; height: 240px; font: italic 400 240px/240px var(--serif); color: var(--blue); }
+      #s8-brush { position: absolute; left: 150px; top: 1180px; width: 780px; height: 90px; }
+
+      /* ---------- S9 logo build ---------- */
+      #s9 { z-index: 8; }
+      #s9-logo { position: absolute; left: 90px; top: 700px; width: 900px; height: 394px; }
+      #s9-logo img { position: absolute; left: 0; top: 0; width: 900px; height: 394px; }
+      #s9-pill-wrap { position: absolute; left: 0; right: 0; top: 1230px; display: flex; justify-content: center; }
+      #s9-pill { display: flex; align-items: center; gap: 22px; border: 5px solid var(--green); border-radius: 999px; padding: 22px 46px 22px 26px; font: 600 52px/1 var(--sans); color: var(--ink); }
+      #s9-pill svg { width: 64px; height: 64px; display: block; }
+      #s9-sub { position: absolute; left: 0; right: 0; top: 1390px; text-align: center; font: 500 30px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: #4c4d4f; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="15">
+
+      <!-- HUD -->
+      <div id="hud">
+        <div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div>
+        <div class="t tl">Parkmed Healthcare LLP</div>
+        <div class="t tr">Bengaluru</div>
+        <div class="t bl"><span class="rec"></span><span id="tc">00:00:00:00</span></div>
+        <div class="t br" id="shot">01 / 09</div>
+      </div>
+
+      <!-- S1 -->
+      <section id="s1" class="scene clip" data-start="0" data-duration="1.0" data-track-index="1">
+        <svg id="s1-svg" viewBox="0 0 1080 1920">
+          <circle id="s1-ring" cx="540" cy="960" r="230" fill="none" stroke="#0065b2" stroke-width="22" stroke-linecap="round" transform="rotate(-90 540 960)" stroke-dasharray="1445.13" stroke-dashoffset="1445.13" />
+          <path id="s1-check" d="M440 965 L515 1040 L655 885" fill="none" stroke="#1fb25a" stroke-width="34" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="320" stroke-dashoffset="320" />
+        </svg>
+        <div id="s1-dot"></div>
+      </section>
+
+      <!-- S2 -->
+      <section id="s2" class="scene clip" data-start="0.85" data-duration="1.15" data-track-index="2">
+        <div class="mq" style="top:40px">PARKMED — NABH — PARKMED — NABH —</div>
+        <div class="mq solid" style="top:240px">NABH — PARKMED — NABH — PARKMED —</div>
+        <div class="mq" style="top:440px">PARKMED — NABH — PARKMED — NABH —</div>
+        <div class="mq" style="top:640px">NABH — PARKMED — NABH — PARKMED —</div>
+        <div class="mq" style="top:1140px">PARKMED — NABH — PARKMED — NABH —</div>
+        <div class="mq solid" style="top:1340px">NABH — PARKMED — NABH — PARKMED —</div>
+        <div class="mq" style="top:1540px">PARKMED — NABH — PARKMED — NABH —</div>
+        <div class="mq" style="top:1740px">NABH — PARKMED — NABH — PARKMED —</div>
+        <div id="s2-band"></div>
+        <div id="s2-line"><span class="w">Parkmed</span> <span class="w">is</span> <span class="w">now</span></div>
+      </section>
+
+      <!-- S3 -->
+      <section id="s3" class="scene clip" data-start="2.0" data-duration="2.0" data-track-index="1">
+        <div id="s3-group">
+          <svg id="s3-brush" viewBox="0 0 940 120"><path id="s3-brush-p" d="M30 78 C 220 40, 470 98, 700 62 S 880 50, 910 58" fill="none" stroke="#1fb25a" stroke-width="30" stroke-linecap="round" stroke-dasharray="960" stroke-dashoffset="960" /></svg>
+          <div id="s3-word"><span class="l">N</span><span class="l">A</span><span class="l">B</span><span class="l">H</span></div>
+          <div id="s3-acc-wrap"><div id="s3-acc"><span id="s3-acc-t">ACCREDITED</span><div class="blk" id="s3-blk"></div></div></div>
+        </div>
+      </section>
+
+      <!-- S4 -->
+      <section id="s4" class="scene clip" data-start="3.95" data-duration="1.85" data-track-index="2">
+        <canvas id="s4-canvas" width="1080" height="1920"></canvas>
+        <div id="s4-top" class="center-x"><span class="mask"><span id="s4-top-t">Committed to</span></span></div>
+      </section>
+
+      <!-- S5 -->
+      <section id="s5" class="scene clip" data-start="5.6" data-duration="1.9" data-track-index="1">
+        <div id="s5-panel"></div>
+        <div id="s5-grid"></div>
+        <div id="s5-textbg"></div>
+        <div id="s5-text">
+          <div id="s5-pre"><span class="mask"><span class="s5-l">Focused on</span></span></div>
+          <div id="s5-big">
+            <span class="mask"><span class="s5-l">Patient</span></span>
+            <span class="mask"><span class="s5-l">Safety.</span></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- S6 -->
+      <section id="s6" class="scene clip" data-start="7.5" data-duration="2.35" data-track-index="2">
+        <div id="s6-card">
+          <img id="s6-logo" src="assets/logo/parkmed-logo.png" alt="Parkmed" />
+          <div id="s6-title">NABH Accreditation</div>
+          <div class="toggle-row"><span>NABH Accredited</span><div class="switch"><div class="on" id="sw-on"></div><div class="knob" id="sw-knob"></div></div></div>
+          <div class="row6" id="r1"><div class="tick"><div class="ring"></div><div class="dotf"></div><svg viewBox="0 0 58 58"><path d="M17 30 L26 39 L42 21" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="40" stroke-dashoffset="40"/></svg></div>Parkmed Healthcare LLP</div>
+          <div class="row6" id="r2"><div class="tick"><div class="ring"></div><div class="dotf"></div><svg viewBox="0 0 58 58"><path d="M17 30 L26 39 L42 21" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="40" stroke-dashoffset="40"/></svg></div>Allopathic Clinic</div>
+          <div class="row6" id="r3"><div class="tick"><div class="ring"></div><div class="dotf"></div><svg viewBox="0 0 58 58"><path d="M17 30 L26 39 L42 21" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="40" stroke-dashoffset="40"/></svg></div>Bengaluru, Karnataka</div>
+        </div>
+        <div id="s6-stamp"><div id="s6-stamp-in">ACCREDITED</div></div>
+      </section>
+
+      <!-- S7 -->
+      <section id="s7" class="scene clip" data-start="9.7" data-duration="1.6" data-track-index="1">
+        <div id="s7-stage">
+          <div class="ring3d" id="ringA" style="top:560px"></div>
+          <div id="s7-core">NABH</div>
+          <div class="ring3d" id="ringB" style="top:1360px"></div>
+        </div>
+      </section>
+
+      <!-- S8 -->
+      <section id="s8" class="scene clip" data-start="11.2" data-duration="1.75" data-track-index="2">
+        <svg id="s8-brush" viewBox="0 0 780 90"><path id="s8-brush-p" d="M20 60 C 200 30, 420 76, 600 44 S 740 40, 760 46" fill="none" stroke="#1fb25a" stroke-width="26" stroke-linecap="round" stroke-dasharray="800" stroke-dashoffset="800" /></svg>
+        <div class="s8w" id="s8-a"><span id="s8-a-in"><span class="l">H</span><span class="l">e</span><span class="l">a</span><span class="l">l</span><span class="l">t</span><span class="l">h</span><span class="l">c</span><span class="l">a</span><span class="l">r</span><span class="l">e</span></span></div>
+        <div class="s8w" id="s8-b"><span class="mask" style="display:inline-block"><span id="s8-b-in">Delivered<span id="s8-dot">.</span></span></span></div>
+      </section>
+
+      <!-- S9 -->
+      <section id="s9" class="scene clip" data-start="12.4" data-duration="2.6" data-track-index="1">
+        <div id="s9-logo">
+          <img id="lg-park" src="assets/logo/part-park.png" alt="" />
+          <img id="lg-med" src="assets/logo/part-med.png" alt="" />
+          <img id="lg-bird" src="assets/logo/part-bird.png" alt="" />
+          <img id="lg-arc" src="assets/logo/part-arc.png" alt="" />
+          <img id="lg-tag" src="assets/logo/part-tagline.png" alt="" />
+        </div>
+        <div id="s9-pill-wrap"><div id="s9-pill">
+          <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="#1fb25a"/><path id="s9-chk" d="M19 33 L28 42 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="44" stroke-dashoffset="44"/></svg>
+          <span>NABH Accredited</span>
+        </div></div>
+        <div id="s9-sub">Allopathic Clinic · Bengaluru, Karnataka</div>
+      </section>
+
+      <!-- Audio: ende.app "Happy Beats / Business Moves Vol. 1" (CC BY 4.0); SFX Kenney (CC0) -->
+      <audio id="music" src="assets/music/happy-beats-business-moves-vol-1-by-ende-dot-app.mp3" data-start="0" data-duration="15" data-media-start="14.02" data-track-index="10" data-volume="1"
+        data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":0.25,"v":0.5},{"t":14.1,"v":0.5},{"t":15,"v":0}]}]}'></audio>
+      <audio id="sx1" src="assets/sfx/ui_rollover2.ogg" data-start="0.05" data-duration="0.3" data-track-index="11" data-volume="0.5"></audio>
+      <audio id="sx2" src="assets/sfx/interface_click_003.ogg" data-start="0.7" data-duration="0.2" data-track-index="12" data-volume="0.6"></audio>
+      <audio id="sx3" src="assets/sfx/impact_impactSoft_medium_002.ogg" data-start="0.88" data-duration="0.3" data-track-index="13" data-volume="0.55"></audio>
+      <audio id="sx4" src="assets/sfx/impact_impactSoft_heavy_003.ogg" data-start="2.0" data-duration="0.6" data-track-index="14" data-volume="0.75"></audio>
+      <audio id="sx5" src="assets/sfx/impact_impactSoft_medium_004.ogg" data-start="3.74" data-duration="0.3" data-track-index="15" data-volume="0.5"></audio>
+      <audio id="sx6" src="assets/sfx/impact_impactSoft_medium_001.ogg" data-start="5.62" data-duration="0.3" data-track-index="16" data-volume="0.55"></audio>
+      <audio id="sx7" src="assets/sfx/casino_card-slide-1.ogg" data-start="7.5" data-duration="0.5" data-track-index="17" data-volume="0.6"></audio>
+      <audio id="sx8" src="assets/sfx/interface_switch_007.ogg" data-start="8.0" data-duration="0.3" data-track-index="18" data-volume="0.6"></audio>
+      <audio id="sx9" src="assets/sfx/interface_click_005.ogg" data-start="8.25" data-duration="0.2" data-track-index="19" data-volume="0.45"></audio>
+      <audio id="sx10" src="assets/sfx/interface_click_005.ogg" data-start="8.5" data-duration="0.2" data-track-index="20" data-volume="0.45"></audio>
+      <audio id="sx11" src="assets/sfx/interface_click_005.ogg" data-start="8.75" data-duration="0.2" data-track-index="21" data-volume="0.45"></audio>
+      <audio id="sx12" src="assets/sfx/impact_impactSoft_medium_003.ogg" data-start="9.0" data-duration="0.3" data-track-index="22" data-volume="0.7"></audio>
+      <audio id="sx13" src="assets/sfx/ui_rollover2.ogg" data-start="11.1" data-duration="0.3" data-track-index="23" data-volume="0.4"></audio>
+      <audio id="sx14" src="assets/sfx/impact_impactBell_heavy_000.ogg" data-start="13.5" data-duration="1.4" data-track-index="24" data-volume="0.55"></audio>
+    </div>
+
+    <script>
+      /* deterministic PRNG */
+      function mulberry32(a) { return function () { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+
+      /* static DOM built once (no timing) */
+      (function buildStatic() {
+        const grid = document.getElementById("s5-grid");
+        for (let i = 0; i < 135; i++) { const c = document.createElement("div"); c.className = "cell"; c.innerHTML = '<div class="h"></div><div class="v"></div>'; grid.appendChild(c); }
+        const wordsA = ["QUALITY", "TRUST", "QUALITY", "TRUST", "QUALITY", "TRUST", "QUALITY", "TRUST"];
+        const wordsB = ["PATIENT SAFETY", "CARE", "PATIENT SAFETY", "CARE", "PATIENT SAFETY", "CARE", "PATIENT SAFETY", "CARE"];
+        [["ringA", wordsA, 640], ["ringB", wordsB, 760]].forEach(([id, words, R]) => {
+          const ring = document.getElementById(id);
+          words.forEach((w, i) => {
+            const d = document.createElement("div"); d.className = "wd";
+            d.innerHTML = "<i></i>" + w;
+            d.style.transform = `rotateY(${i * 45}deg) translateZ(${R}px) translate(-50%, -50%)`;
+            ring.appendChild(d);
+          });
+        });
+      })();
+
+      function build() {
+        const IN = "power3.out", OUT = "power2.in", SNAP = "expo.out";
+        const tl = gsap.timeline({ paused: true });
+
+        /* ---------- particle field (S4), drawn as a pure function of time ---------- */
+        const cv = document.getElementById("s4-canvas"), ctx = cv.getContext("2d");
+        const off = document.createElement("canvas"); off.width = 1080; off.height = 360;
+        const octx = off.getContext("2d");
+        octx.fillStyle = "#000"; octx.textAlign = "center"; octx.textBaseline = "middle";
+        octx.font = '400 196px "Archivo Black"'; octx.fillText("QUALITY", 540, 190);
+        const img = octx.getImageData(0, 0, 1080, 360).data, pts = [];
+        for (let y = 0; y < 360; y += 6) for (let x = 0; x < 1080; x += 6) if (img[(y * 1080 + x) * 4 + 3] > 140) pts.push([x, y + 830]);
+        const rnd = mulberry32(20261013), N = 2600, P = [];
+        for (let i = 0; i < N; i++) {
+          const tgt = pts[Math.floor(rnd() * pts.length)];
+          const a = rnd() * Math.PI * 2, r = 40 + rnd() * 1100;
+          P.push({ sx: 540 + Math.cos(a) * r, sy: 960 + Math.sin(a) * r * 1.4, tx: tgt[0], ty: tgt[1], d: rnd() * 0.28, c: rnd() < 0.28 ? "#1fb25a" : "#0065b2", s: 4 + rnd() * 3, j: rnd() * 6.28, ex: 0.6 + rnd(), ey: rnd() - 0.5 });
+        }
+        const easeOut = (x) => 1 - Math.pow(1 - x, 4), clamp = (x) => Math.max(0, Math.min(1, x));
+        function drawParticles(t) {
+          ctx.clearRect(0, 0, 1080, 1920);
+          if (t < 3.95 || t > 5.85) return;
+          for (const p of P) {
+            const e = easeOut(clamp((t - 4.0 - p.d) / 0.62));
+            const q = clamp((t - 5.48 - p.d * 0.35) / 0.3), q2 = q * q * q;
+            const wob = (1 - q) * e * 2.2;
+            const x = p.sx + (p.tx - p.sx) * e + Math.sin(t * 9 + p.j) * wob + q2 * 1500 * p.ex;
+            const y = p.sy + (p.ty - p.sy) * e + Math.cos(t * 7 + p.j) * wob + q2 * 700 * p.ey;
+            ctx.globalAlpha = Math.min(1, 0.25 + e);
+            ctx.fillStyle = p.c; ctx.fillRect(x - p.s / 2, y - p.s / 2, p.s, p.s);
+          }
+          ctx.globalAlpha = 1;
+        }
+
+        /* ---------- HUD: timecode, shot counter and colour per shot ---------- */
+        const tcEl = document.getElementById("tc"), shotEl = document.getElementById("shot"), hud = document.getElementById("hud");
+        const cuts = [0, 1.0, 2.0, 4.0, 5.75, 7.5, 9.85, 11.25, 12.5];
+        function drawHud(t) {
+          const f = Math.min(899, Math.floor(t * 60 + 1e-6));
+          const ss = Math.floor(f / 60), ff = f % 60;
+          tcEl.textContent = `00:00:${String(ss).padStart(2, "0")}:${String(ff).padStart(2, "0")}`;
+          let k = 0; cuts.forEach((c, i) => { if (t >= c) k = i; });
+          shotEl.textContent = `${String(k + 1).padStart(2, "0")} / 09`;
+          const onBlue = (t >= 1.0 && t < 2.0) || (t >= 7.5 && t < 9.85);
+          hud.style.color = onBlue ? "#ffffff" : "#121417";
+        }
+        const clock = { t: 0 };
+        tl.to(clock, { t: 15, duration: 15, ease: "none", onUpdate: () => { drawParticles(clock.t); drawHud(clock.t); } }, 0);
+
+        /* ---------- S1: dot → ring → check ---------- */
+        tl.fromTo("#s1-dot", { scale: 0 }, { scale: 1, duration: 0.22, ease: "back.out(3)" }, 0.04);
+        tl.to("#s1-dot", { y: -230, duration: 0.18, ease: "power2.inOut" }, 0.24);
+        tl.fromTo("#s1-ring", { attr: { "stroke-dashoffset": 1445.13 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.36, ease: "power3.inOut" }, 0.38);
+        tl.to("#s1-dot", { scale: 0, duration: 0.12, ease: OUT }, 0.42);
+        tl.fromTo("#s1-check", { attr: { "stroke-dashoffset": 320 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.2, ease: "power2.out" }, 0.68);
+        tl.to("#s1-svg", { scale: 1.5, transformOrigin: "540px 960px", duration: 0.2, ease: "power2.in" }, 0.84);
+
+        /* ---------- S2: circle flood, marquee, kinetic line ---------- */
+        tl.fromTo("#s2", { clipPath: "circle(0px at 540px 960px)" }, { clipPath: "circle(1200px at 540px 960px)", duration: 0.3, ease: "power3.in" }, 0.85);
+        document.querySelectorAll("#s2 .mq").forEach((el, i) => {
+          const dir = i % 2 ? 1 : -1;
+          tl.fromTo(el, { x: dir * -160 }, { x: dir * 160, duration: 1.15, ease: "none" }, 0.85);
+        });
+        tl.fromTo("#s2-band", { scaleY: 0 }, { scaleY: 1, duration: 0.25, ease: SNAP }, 1.02);
+        tl.fromTo("#s2-line .w", { yPercent: 110, opacity: 0, rotation: 6 }, { yPercent: 0, opacity: 1, rotation: 0, duration: 0.4, ease: SNAP, stagger: 0.08 }, 1.05);
+        tl.to("#s2-line", { scale: 1.08, duration: 0.5, ease: "power1.in" }, 1.5);
+
+        /* ---------- S3: NABH slam on the drop, block-reveal ACCREDITED, brush ---------- */
+        tl.fromTo("#s3-word .l", { yPercent: -120, skewY: -12, scaleY: 1.5, opacity: 0 }, { yPercent: 0, skewY: 0, scaleY: 1, opacity: 1, duration: 0.42, ease: SNAP, stagger: 0.06 }, 2.0);
+        tl.fromTo("#s3-word", { scale: 1.06 }, { scale: 1, duration: 0.9, ease: IN }, 2.0);
+        tl.fromTo("#s3-brush-p", { attr: { "stroke-dashoffset": 960 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.35, ease: "power2.out" }, 2.36);
+        tl.set("#s3-acc-t", { opacity: 0 }, 0);
+        tl.fromTo("#s3-blk", { scaleX: 0 }, { scaleX: 1, duration: 0.2, ease: "power3.inOut" }, 2.42);
+        tl.set("#s3-acc-t", { opacity: 1 }, 2.62);
+        tl.set("#s3-blk", { transformOrigin: "right center" }, 2.62);
+        tl.to("#s3-blk", { scaleX: 0, duration: 0.22, ease: "power3.inOut" }, 2.64);
+        tl.fromTo("#s3-group", { scale: 1 }, { scale: 1.08, duration: 0.84, ease: "none" }, 2.9);
+        tl.to("#s3-group", { scale: 3.6, opacity: 0, filter: "blur(14px)", duration: 0.26, ease: "power3.in" }, 3.74);
+
+        /* ---------- S4: particles form QUALITY ---------- */
+        tl.fromTo("#s4-top-t", { yPercent: 110 }, { yPercent: 0, duration: 0.45, ease: SNAP }, 4.15);
+        tl.to("#s4-top-t", { yPercent: -110, duration: 0.22, ease: OUT }, 5.5);
+
+        /* ---------- S5: diagonal green wipe, grid morph dot → plus, text ---------- */
+        tl.fromTo("#s5-panel", { xPercent: 100, skewX: -14 }, { xPercent: 0, skewX: 0, duration: 0.32, ease: "power4.out" }, 5.6);
+        tl.fromTo("#s5-grid .h", { scaleX: 0, scaleY: 0 }, { scaleX: 0.361, scaleY: 1, duration: 0.3, ease: "back.out(2.4)", stagger: { grid: [15, 9], from: "center", amount: 0.28 } }, 5.75);
+        tl.set("#s5-grid .v", { scaleY: 0 }, 0);
+        tl.to("#s5-grid .h", { scaleX: 1, duration: 0.28, ease: "power3.inOut", stagger: { grid: [15, 9], from: "center", amount: 0.24 } }, 6.0);
+        tl.to("#s5-grid .v", { scaleY: 1, duration: 0.28, ease: "power3.inOut", stagger: { grid: [15, 9], from: "center", amount: 0.24 } }, 6.04);
+        tl.to("#s5-grid .cell", { keyframes: [{ scale: 0.55, duration: 0.18, ease: "power2.out" }, { scale: 1, duration: 0.3, ease: "back.out(2)" }], stagger: { grid: [15, 9], from: "center", amount: 0.35 } }, 6.6);
+        tl.fromTo("#s5-textbg", { scaleY: 0 }, { scaleY: 1, duration: 0.3, ease: "power4.out" }, 6.22);
+        tl.fromTo(".s5-l", { yPercent: 110 }, { yPercent: 0, duration: 0.45, ease: SNAP, stagger: 0.07 }, 6.3);
+        tl.to("#s5-text", { x: -30, duration: 1.1, ease: "none" }, 6.4);
+
+        /* ---------- S6: 3D card, toggle, ticks, stamp ---------- */
+        tl.fromTo("#s6-card", { y: 1200, rotationX: 38, rotationZ: -4 }, { y: 0, rotationX: 0, rotationZ: 0, duration: 0.55, ease: SNAP }, 7.5);
+        tl.to("#sw-knob", { x: 60, duration: 0.22, ease: "back.out(2)" }, 8.0);
+        tl.to("#sw-on", { opacity: 1, duration: 0.15, ease: "none" }, 8.0);
+        ["#r1", "#r2", "#r3"].forEach((r, i) => {
+          const t0 = 8.25 + i * 0.25; // beat-grid: half-beats
+          tl.fromTo(`${r} .dotf`, { scale: 0 }, { scale: 1, duration: 0.24, ease: "back.out(2.6)" }, t0);
+          tl.fromTo(`${r} svg path`, { attr: { "stroke-dashoffset": 40 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.18, ease: "power2.out" }, t0 + 0.06);
+        });
+        tl.fromTo("#s6-stamp-in", { scale: 1.9, rotation: -14, opacity: 0 }, { scale: 1, rotation: -6, opacity: 1, duration: 0.2, ease: "power4.in" }, 8.82);
+        tl.to("#s6-card", { keyframes: [{ x: -14, duration: 0.04 }, { x: 10, duration: 0.05 }, { x: -5, duration: 0.05 }, { x: 0, duration: 0.06 }] }, 9.02);
+        tl.to(["#s6-card", "#s6-stamp"], { scale: 0.86, duration: 0.6, ease: "power1.in" }, 9.2);
+
+        /* ---------- S7: white circle out of the card, 3D rings around NABH ---------- */
+        tl.fromTo("#s7", { clipPath: "circle(0px at 540px 1300px)" }, { clipPath: "circle(2100px at 540px 1300px)", duration: 0.35, ease: "power3.in" }, 9.7);
+        tl.fromTo("#ringA", { rotationX: -14, rotationY: 30 }, { rotationX: -14, rotationY: -110, duration: 1.6, ease: "power1.inOut" }, 9.7);
+        tl.fromTo("#ringB", { rotationX: 12, rotationY: -20 }, { rotationX: 12, rotationY: 120, duration: 1.6, ease: "power1.inOut" }, 9.7);
+        tl.fromTo("#s7-core", { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: SNAP }, 9.8);
+        tl.fromTo("#s7-stage", { scale: 1.12 }, { scale: 0.96, duration: 1.4, ease: "power2.out" }, 9.7);
+        tl.to("#s7-stage", { x: -1300, filter: "blur(10px)", duration: 0.22, ease: "power3.in" }, 11.08);
+
+        /* ---------- S8: Healthcare Delivered. → flies into the logo tagline ---------- */
+        tl.fromTo("#s8-a .l", { x: 260, opacity: 0, skewX: -18 }, { x: 0, opacity: 1, skewX: 0, duration: 0.42, ease: SNAP, stagger: 0.025 }, 11.25);
+        tl.fromTo("#s8-b-in", { yPercent: 110 }, { yPercent: 0, duration: 0.45, ease: SNAP }, 11.5);
+        tl.fromTo("#s8-brush-p", { attr: { "stroke-dashoffset": 800 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.3, ease: "power2.out" }, 11.72);
+        // Morph targets: logo box at (90,700) 900px wide = 0.831 scale of the 1083px artwork.
+        // Tagline "Healthcare" spans x 0–501, "Delivered" x 516–1082, centred at y 440 in artwork px.
+        const k = 900 / 1083;
+        ctx.font = '400 160px "Archivo Black"'; const wA = ctx.measureText("Healthcare").width;
+        ctx.font = 'italic 400 240px "Instrument Serif"'; const wB = ctx.measureText("Delivered").width;
+        const tA = { x: 90 + 250.5 * k - 540, y: 700 + 440 * k - 860, s: (501 * k) / wA };
+        const tB = { x: 90 + 799 * k - 540, y: 700 + 440 * k - 1070, s: (566 * k) / wB };
+        tl.to("#s8-dot", { opacity: 0, duration: 0.1 }, 12.15);
+        tl.to("#s8-brush", { opacity: 0, y: 30, duration: 0.2, ease: OUT }, 12.12);
+        tl.to("#s8-a", { x: tA.x, y: tA.y, scale: tA.s, duration: 0.5, ease: "power3.inOut" }, 12.2);
+        tl.to("#s8-b", { x: tB.x, y: tB.y, scale: tB.s, duration: 0.5, ease: "power3.inOut" }, 12.2);
+        tl.to(["#s8-a", "#s8-b"], { opacity: 0, duration: 0.16, ease: "power1.in" }, 12.54);
+
+        /* ---------- S9: logo builds from its exact artwork layers ---------- */
+        tl.fromTo("#lg-park", { clipPath: "inset(100% 0% 0% 0%)", y: 40 }, { clipPath: "inset(0% 0% 0% 0%)", y: 0, duration: 0.4, ease: SNAP }, 12.64);
+        tl.fromTo("#lg-med", { clipPath: "inset(100% 0% 0% 0%)", y: 40 }, { clipPath: "inset(0% 0% 0% 0%)", y: 0, duration: 0.4, ease: SNAP }, 12.72);
+        tl.fromTo("#lg-tag", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "none" }, 12.48);
+        tl.fromTo("#lg-bird", { scale: 0, transformOrigin: "53.3% 27.2%" }, { scale: 1, duration: 0.35, ease: "back.out(3)" }, 12.92);
+        tl.fromTo("#lg-arc", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.45, ease: "power3.inOut" }, 12.98);
+        tl.fromTo("#s9-pill", { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2.2)" }, 13.45); // beat-locked: 13.50s
+        tl.fromTo("#s9-chk", { attr: { "stroke-dashoffset": 44 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.25, ease: "power2.out" }, 13.62);
+        tl.fromTo("#s9-sub", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: IN }, 13.7);
+
+        drawParticles(0); drawHud(0);
+        window.__timelines["main"] = tl;
+      }
+
+      Promise.all([
+        document.fonts.load('400 160px "Archivo Black"'),
+        document.fonts.load('italic 400 240px "Instrument Serif"'),
+        document.fonts.load('500 22px "IBM Plex Mono"'),
+        document.fonts.load('600 52px "IBM Plex Sans"'),
+      ]).then(() => document.fonts.ready).then(build);
+    </script>
+  </body>
+</html>
