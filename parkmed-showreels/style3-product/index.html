@@ -175,6 +175,8 @@
 
       function build() {
         const tl = gsap.timeline({ paused: true }), X = "expo.out", P3 = "power3.out";
+        // Stroke-drawn paths stay hidden until their draw starts (avoids a round end-cap dot beforehand).
+        [["#s5-arc", at(15)], ["#s5-chk", at(16) - 0.08], ["#s7-chk", at(24) + 0.15]].forEach(([sel, t]) => { document.querySelector(sel).style.visibility = "hidden"; tl.set(sel, { visibility: "inherit" }, t); });
 
         /* glow drift */
         tl.fromTo("#blobA", { x: -160, scale: 1 }, { x: 160, scale: 1.12, duration: 15, ease: "sine.inOut" }, 0);
